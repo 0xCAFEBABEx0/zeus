@@ -7,8 +7,8 @@ export default withSentryConfig(nextConfig, {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
-  org: 'skunkwork',
-  project: 'sentry-teal-chair',
+  org: process.env.SENTRY_ORG || 'skunkwork',
+  project: process.env.SENTRY_PROJECT || 'sentry-teal-chair',
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

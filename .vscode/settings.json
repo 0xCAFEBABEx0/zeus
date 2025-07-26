@@ -32,11 +32,7 @@
   },
   "editor.formatOnSaveMode": "file",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "[javascript][typescript][typescriptreact]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit"
-    }
-  },
+
   "coderabbit.enable": true,
   "coderabbit.autoReview": true,
   "coderabbit.showInlineComments": true,

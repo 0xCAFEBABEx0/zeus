@@ -6,6 +6,11 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+// Validate critical environment variables
+if (!process.env.POSTGRES_URL) {
+  throw new Error('CRITICAL: POSTGRES_URL environment variable is not set.')
+}
+
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -61,7 +66,7 @@ export default buildConfig({
   editor: defaultLexical,
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: process.env.POSTGRES_URL,
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users],

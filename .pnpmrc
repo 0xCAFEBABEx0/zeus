@@ -4,7 +4,7 @@ store-dir=~/.pnpm-store
 
 # Security settings
 auto-install-peers=false
-strict-peer-dependencies=false
+strict-peer-dependencies=true
 
 # Disable build script warnings for trusted packages
 ignore-scripts=false

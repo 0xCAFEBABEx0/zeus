@@ -128,8 +128,10 @@ export default function Page() {
           color: #6341F0;
           text-decoration: underline;
           cursor: pointer;
+        }
 
-          @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+          a {
             color: #B3A1FF;
           }
         }
@@ -142,36 +144,36 @@ export default function Page() {
           border: none;
           padding: 0;
           margin-top: 4px;
+        }
 
-          & > span {
-            display: inline-block;
-            padding: 12px 16px;
-            border-radius: inherit;
-            font-size: 20px;
-            font-weight: bold;
-            line-height: 1;
-            background-color: #7553FF;
-            border: 1px solid #553DB8;
-            transform: translateY(-4px);
-          }
+        button > span {
+          display: inline-block;
+          padding: 12px 16px;
+          border-radius: inherit;
+          font-size: 20px;
+          font-weight: bold;
+          line-height: 1;
+          background-color: #7553FF;
+          border: 1px solid #553DB8;
+          transform: translateY(-4px);
+        }
 
-          &:hover > span {
-            transform: translateY(-8px);
-          }
+        button:hover > span {
+          transform: translateY(-8px);
+        }
 
-          &:active > span {
-            transform: translateY(0);
-          }
+        button:active > span {
+          transform: translateY(0);
+        }
 
-          &:disabled {
-	            cursor: not-allowed;
-	            opacity: 0.6;
-	
-	            & > span {
-	              transform: translateY(0);
-	              border: none
-	            }
-	          }
+        button:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        button:disabled > span {
+          transform: translateY(0);
+          border: none;
         }
 
         .description {
@@ -180,8 +182,10 @@ export default function Page() {
           max-width: 500px;
           line-height: 1.5;
           font-size: 20px;
+        }
 
-          @media (prefers-color-scheme: dark) {
+        @media (prefers-color-scheme: dark) {
+          .description {
             color: #A49FB5;
           }
         }
