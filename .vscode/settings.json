@@ -36,5 +36,10 @@
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     }
-  }
+  },
+  "coderabbit.enable": true,
+  "coderabbit.autoReview": true,
+  "coderabbit.showInlineComments": true,
+  "coderabbit.enableSuggestions": true,
+  "coderabbit.showReviewSummary": true
 }
