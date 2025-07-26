@@ -3,17 +3,27 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 import * as Sentry from '@sentry/nextjs'
+import { getSentryEnvironment } from './utilities/env'
 
 Sentry.init({
-  dsn: 'https://d945358f21d8cc73ed5efd69996a3050@o4509728862568448.ingest.us.sentry.io/4509728863813632',
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+
+  environment: getSentryEnvironment(),
 
   // Add optional integrations for additional features
-  integrations: [Sentry.replayIntegration()],
+  integrations: [
+    Sentry.replayIntegration(),
+    // Send console.log, console.error, and console.warn calls as logs to Sentry
+    Sentry.consoleLoggingIntegration({ levels: ["log", "error", "warn"] }),
+  ],
 
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-  tracesSampleRate: 1,
+  tracesSampleRate: 1.0,
+
   // Enable logs to be sent to Sentry
-  enableLogs: true,
+  _experiments: {
+    enableLogs: true,
+  },
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while

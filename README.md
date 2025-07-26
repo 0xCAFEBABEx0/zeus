@@ -98,6 +98,14 @@ Visit `/sentry-test` to test Sentry functionality:
 - Structured logging
 - API error tracking
 
+### Test Vercel Analytics & Speed Insights
+
+Visit `/vercel-insights-test` to test analytics functionality:
+- Check if Analytics and Speed Insights are loaded
+- Test custom event tracking
+- Debug environment configuration
+- View troubleshooting tips
+
 ## Development
 
 ### Available Scripts
