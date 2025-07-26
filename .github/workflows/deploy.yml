@@ -22,19 +22,19 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: '10.11.0'
+          bun-version: '1.2.19'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install --frozen-lockfile
 
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
 
       - name: Type check
-        run: pnpm generate:types
+        run: bun run generate:types
 
   # Deployment jobs commented out until GitHub Secrets are configured
   # Uncomment after setting up: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
