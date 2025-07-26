@@ -7,16 +7,16 @@
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
-    "ci": "pnpm build",
+    "ci": "bun run build",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && pnpm build && pnpm start",
+    "dev:prod": "cross-env NODE_OPTIONS=--no-deprecation rm -rf .next && bun run build && bun run start",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "ii": "cross-env NODE_OPTIONS=--no-deprecation pnpm --ignore-workspace install",
+    "ii": "cross-env NODE_OPTIONS=--no-deprecation bun install --frozen-lockfile",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
+    "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm bun.lockb && bun install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "deploy:preview": "git checkout preview && git merge development && git push origin preview",
     "deploy:production": "git checkout main && git merge preview && git push origin main",
@@ -78,22 +78,14 @@
     "tailwindcss": "^3.4.3",
     "typescript": "^5.8.3"
   },
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "bun@1.2.19",
   "engines": {
-    "node": "22"
+    "node": "22",
+    "bun": ">=1.2.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp"
-    ],
-    "ignoredBuiltDependencies": [
-      "@sentry/cli",
-      "@vercel/speed-insights",
-      "bufferutil",
-      "esbuild",
-      "unrs-resolver",
-      "utf-8-validate",
-      "yarn"
-    ]
-  }
+  "trustedDependencies": [
+    "@sentry/cli",
+    "@vercel/speed-insights",
+    "unrs-resolver"
+  ]
 }

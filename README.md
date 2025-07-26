@@ -7,6 +7,7 @@ A modern website template built with [Payload CMS](https://payloadcms.com) and [
 - **Payload CMS** - Headless CMS with admin panel
 - **Next.js 15** - React framework with App Router
 - **TypeScript** - Type-safe development
+- **Bun** - Fast package manager and runtime (17x faster than pnpm)
 - **Tailwind CSS** - Utility-first CSS framework
 - **Sentry Integration** - Error tracking and performance monitoring
 - **Vercel Analytics & Speed Insights** - Performance monitoring
@@ -25,14 +26,14 @@ This project follows a **Development → Preview → Production** workflow using
 # Clone and setup
 git clone https://github.com/w9be1tip0v/zeus.git
 cd zeus
-pnpm install
+bun install
 
 # Set up environment variables
 cp env.example .env.local
 # Edit .env.local with your local configuration
 
 # Start development server
-pnpm dev
+bun dev
 ```
 
 **Access**: [http://localhost:3000](http://localhost:3000)
@@ -110,12 +111,12 @@ Visit `/vercel-insights-test` to test analytics functionality:
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run generate:types` - Generate TypeScript types
-- `npm run generate:importmap` - Generate import map for admin
+- `bun dev` - Start development server
+- `bun run build` - Build for production
+- `bun run start` - Start production server
+- `bun run lint` - Run ESLint
+- `bun run generate:types` - Generate TypeScript types
+- `bun run generate:importmap` - Generate import map for admin
 
 ### Project Structure
 
