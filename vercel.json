@@ -14,5 +14,11 @@
     "env": {
       "NODE_VERSION": "20.9.0"
     }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "preview": true
+    }
   }
 }
