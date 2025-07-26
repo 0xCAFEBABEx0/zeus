@@ -10,7 +10,7 @@ export const SentryTest: React.FC = () => {
   const handleTestError = () => {
     try {
       // This will throw an error that should be captured by Sentry
-      // @ts-ignore - Intentionally calling undefined function for testing
+                 // @ts-expect-error - Intentionally calling undefined function for testing
       myUndefinedFunction();
     } catch (error) {
       // Capture the exception in Sentry

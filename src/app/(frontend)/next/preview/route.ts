@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import configPromise from '@payload-config'
+import configPromise from '../../../../payload.config'
 
 export async function GET(
   req: {

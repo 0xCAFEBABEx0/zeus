@@ -9,6 +9,7 @@ A modern website template built with [Payload CMS](https://payloadcms.com) and [
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Sentry Integration** - Error tracking and performance monitoring
+- **CodeRabbit** - AI-powered code review and suggestions
 - **Vercel Analytics & Speed Insights** - Performance monitoring
 - **Form Builder** - Dynamic form creation
 - **SEO Plugin** - Built-in SEO management
@@ -16,31 +17,62 @@ A modern website template built with [Payload CMS](https://payloadcms.com) and [
 - **Redirects Plugin** - URL redirection management
 - **Nested Docs** - Hierarchical content structure
 
-## Quick Start
+## Development Flow
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/w9be1tip0v/zeus.git
-   cd zeus
-   ```
+This project follows a **Development → Preview → Production** workflow using Vercel:
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 1. **Development (Local)**
+```bash
+# Clone and setup
+git clone https://github.com/w9be1tip0v/zeus.git
+cd zeus
+pnpm install
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
+# Set up environment variables
+cp env.example .env.local
+# Edit .env.local with your local configuration
 
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+# Start development server
+pnpm dev
+```
 
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+**Access**: [http://localhost:3000](http://localhost:3000)
+
+### 2. **Preview (Staging)**
+```bash
+# Create and push to preview branch
+git checkout -b preview
+git push -u origin preview
+```
+
+**Access**: Vercel automatically creates a preview URL for each push to the `preview` branch
+
+### 3. **Production**
+```bash
+# Merge preview branch to main
+git checkout main
+git merge preview
+git push origin main
+```
+
+**Access**: Production URL (configured in Vercel)
+
+## Environment Configuration
+
+### Environment Variables
+- **Development**: Uses `.env.local`
+- **Preview**: Uses Vercel environment variables (staging)
+- **Production**: Uses Vercel environment variables (production)
+
+### Sentry Integration
+- **Development**: `development` environment
+- **Preview**: `staging` environment  
+- **Production**: `production` environment
+
+### Database
+- **Development**: Local or development database
+- **Preview**: Production database (read-only recommended)
+- **Production**: Production database
 
 ## Deployment
 
@@ -66,6 +98,28 @@ Visit `/sentry-test` to test Sentry functionality:
 - Performance monitoring with custom spans
 - Structured logging
 - API error tracking
+
+## Code Review with CodeRabbit
+
+CodeRabbit provides AI-powered code reviews for every pull request:
+
+### Features
+- **Automatic Review**: CodeRabbit automatically reviews all PRs
+- **Inline Comments**: Get suggestions directly in your code
+- **VSCode/Cursor Integration**: View reviews in your editor
+- **Learning**: CodeRabbit learns from your codebase patterns
+
+### Setup in VSCode/Cursor
+1. Install recommended extensions: `Ctrl/Cmd + Shift + P` → "Extensions: Show Recommended Extensions"
+2. Install `CodeRabbit` extension from the list
+3. CodeRabbit will show inline comments and suggestions in your editor
+4. Access CodeRabbit panel from the sidebar for detailed reviews
+
+### Usage
+- CodeRabbit automatically reviews all pull requests
+- Check the GitHub PR page for comprehensive review comments
+- Use the VSCode extension to see suggestions while coding
+- Interactive chat with CodeRabbit for code explanations
 
 ## Development
 
