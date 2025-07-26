@@ -4,7 +4,7 @@
 
 ### Start Development Server
 ```bash
-pnpm dev
+bun dev
 ```
 
 The development server will be available at:
@@ -17,7 +17,7 @@ The development server will be available at:
 ### Current Environment Status
 ```bash
 # Check current environment
-pnpm run env:check
+bun run env:check
 
 # Expected output in development:
 # Environment: development
@@ -55,32 +55,32 @@ pnpm run env:check
 ### Essential Commands
 ```bash
 # Start development server
-pnpm dev
+bun dev
 
 # Build for production
-pnpm build
+bun run build
 
 # Type checking
-pnpm generate:types
+bun run generate:types
 
 # Linting
-pnpm lint
-pnpm lint:fix
+bun run lint
+bun run lint:fix
 
 # Environment check
-pnpm run env:check
+bun run env:check
 ```
 
 ### PayloadCMS Commands
 ```bash
 # Generate types
-pnpm generate:types
+bun run generate:types
 
 # Generate import map for admin UI
-pnpm generate:importmap
+bun run generate:importmap
 
 # Run migrations
-pnpm payload migrate
+bun payload migrate
 
 # Seed database
 curl http://localhost:3000/next/seed
@@ -168,7 +168,7 @@ src/app/(frontend)/      # Page-specific components
 
 # Restart command:
 # Stop: Ctrl+C
-# Start: pnpm dev
+# Start: bun dev
 ```
 
 ## 🐛 Common Development Issues
@@ -179,17 +179,17 @@ src/app/(frontend)/      # Page-specific components
 lsof -ti:3000 | xargs kill -9
 
 # Or use different port
-pnpm dev -- -p 3001
+bun dev -- -p 3001
 ```
 
 ### TypeScript Errors
 ```bash
 # Regenerate types
-pnpm generate:types
+bun generate:types
 
 # Clear Next.js cache
 rm -rf .next
-pnpm dev
+bun dev
 ```
 
 ### Database Connection Issues
@@ -198,17 +198,17 @@ pnpm dev
 cat .env.local
 
 # Test database connection
-pnpm payload migrate:status
+bun payload migrate:status
 ```
 
 ### PayloadCMS Admin Issues
 ```bash
 # Regenerate admin import map
-pnpm generate:importmap
+bun generate:importmap
 
 # Clear admin cache
 rm -rf .next
-pnpm dev
+bun dev
 ```
 
 ## 🚀 Performance Tips
@@ -236,7 +236,7 @@ pnpm dev
 ### Environment Management
 - Never commit `.env.local` files
 - Use the `env.example` template
-- Check environment with `pnpm run env:check`
+- Check environment with `bun run env:check`
 - Test in preview environment before production
 
 ### Git Workflow
@@ -255,7 +255,7 @@ git merge feature/your-feature-name
 git push origin development
 
 # Deploy to preview for testing
-pnpm run deploy:preview
+bun run deploy:preview
 ```
 
 ## 🆘 Getting Help
