@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Test Sentry logging
     const { logger } = Sentry;
@@ -21,11 +21,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Intentionally throw an error to test Sentry
     // myUndefinedFunction is intentionally not defined to test Sentry error tracking
-    // @ts-ignore - Intentionally calling undefined function for testing
+               // @ts-expect-error - Intentionally calling undefined function for testing
     myUndefinedFunction();
 
     return NextResponse.json({ message: "This should not be reached" });
