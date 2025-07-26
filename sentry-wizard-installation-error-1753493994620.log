@@ -1,0 +1,4 @@
+Volta error: Could not find executable "pnpm"
+
+Use `volta install` to add a package to your toolchain (see `volta help install` for more info).
+Error details written to /Users/w9be1tip0v/.volta/log/volta-error-2025-07-26_10_39_54.603.log
