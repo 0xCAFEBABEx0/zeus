@@ -23,6 +23,13 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   redirects,
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@payload-config': './src/payload.config.ts',
+    }
+    return config
+  },
 }
 
 export default withPayload(nextConfig, { devBundleServerPackages: false })
