@@ -9,7 +9,6 @@ A modern website template built with [Payload CMS](https://payloadcms.com) and [
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first CSS framework
 - **Sentry Integration** - Error tracking and performance monitoring
-- **CodeRabbit** - AI-powered code review and suggestions
 - **Vercel Analytics & Speed Insights** - Performance monitoring
 - **Form Builder** - Dynamic form creation
 - **SEO Plugin** - Built-in SEO management
@@ -99,27 +98,13 @@ Visit `/sentry-test` to test Sentry functionality:
 - Structured logging
 - API error tracking
 
-## Code Review with CodeRabbit
+### Test Vercel Analytics & Speed Insights
 
-CodeRabbit provides AI-powered code reviews for every pull request:
-
-### Features
-- **Automatic Review**: CodeRabbit automatically reviews all PRs
-- **Inline Comments**: Get suggestions directly in your code
-- **VSCode/Cursor Integration**: View reviews in your editor
-- **Learning**: CodeRabbit learns from your codebase patterns
-
-### Setup in VSCode/Cursor
-1. Install recommended extensions: `Ctrl/Cmd + Shift + P` → "Extensions: Show Recommended Extensions"
-2. Install `CodeRabbit` extension from the list
-3. CodeRabbit will show inline comments and suggestions in your editor
-4. Access CodeRabbit panel from the sidebar for detailed reviews
-
-### Usage
-- CodeRabbit automatically reviews all pull requests
-- Check the GitHub PR page for comprehensive review comments
-- Use the VSCode extension to see suggestions while coding
-- Interactive chat with CodeRabbit for code explanations
+Visit `/vercel-insights-test` to test analytics functionality:
+- Check if Analytics and Speed Insights are loaded
+- Test custom event tracking
+- Debug environment configuration
+- View troubleshooting tips
 
 ## Development
 

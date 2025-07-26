@@ -1,7 +1,12 @@
 import { withSentryConfig } from '@sentry/nextjs'
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    // Enable Web Vitals tracking
+    webVitalsAttribution: ['CLS', 'LCP'],
+  },
+}
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
