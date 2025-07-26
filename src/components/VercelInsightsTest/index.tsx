@@ -2,6 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
+// Type definitions for Vercel analytics
+interface VercelAnalytics {
+  track: (event: string, properties?: Record<string, unknown>) => void;
+}
+
 export const VercelInsightsTest: React.FC = () => {
   const [analyticsLoaded, setAnalyticsLoaded] = useState(false)
   const [speedInsightsLoaded, setSpeedInsightsLoaded] = useState(false)
@@ -13,16 +18,16 @@ export const VercelInsightsTest: React.FC = () => {
 
     // Check if Vercel Analytics is loaded
     const checkAnalytics = () => {
-      // @ts-expect-error - Vercel analytics global object
-      if (window.va || window._va) {
+      const win = window as any
+      if (win.va || win._va) {
         setAnalyticsLoaded(true)
       }
     }
 
     // Check if Speed Insights is loaded
     const checkSpeedInsights = () => {
-      // @ts-expect-error - Speed Insights global objects
-      if (window.si || window._si || window.speedInsights || window.__VERCEL_SPEED_INSIGHTS__) {
+      const win = window as any
+      if (win.si || win._si || win.speedInsights || win.__VERCEL_SPEED_INSIGHTS__) {
         setSpeedInsightsLoaded(true)
       }
     }
@@ -41,20 +46,18 @@ export const VercelInsightsTest: React.FC = () => {
   }, [])
 
   const triggerPageView = () => {
-    // @ts-expect-error - Vercel analytics track function
-    if (window.va?.track) {
-      // @ts-expect-error - Vercel analytics track function
-      window.va.track('test-page-view', {
+    const analytics = (window as any).va as VercelAnalytics | undefined
+    if (analytics?.track) {
+      analytics.track('test-page-view', {
         timestamp: new Date().toISOString(),
       })
     }
   }
 
   const triggerCustomEvent = () => {
-    // @ts-expect-error - Vercel analytics track function
-    if (window.va?.track) {
-      // @ts-expect-error - Vercel analytics track function
-      window.va.track('test-custom-event', {
+    const analytics = (window as any).va as VercelAnalytics | undefined
+    if (analytics?.track) {
+      analytics.track('test-custom-event', {
         action: 'button-click',
         category: 'test',
         timestamp: new Date().toISOString(),
