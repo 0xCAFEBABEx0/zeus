@@ -6,8 +6,11 @@ store-dir=~/.pnpm-store
 auto-install-peers=false
 strict-peer-dependencies=true
 
-# Disable build script warnings for trusted packages
+# Build script configuration
+# Allow build scripts to run (required for @sentry/cli, @vercel/speed-insights, etc.)
 ignore-scripts=false
+enable-pre-post-scripts=true
 
-# Allow build scripts for essential packages
-enable-pre-post-scripts=true 
+# Note: In newer versions of pnpm, build scripts are approved via:
+# 1. Using pnpm approve-builds command
+# 2. Or by setting up package-specific exceptions 
