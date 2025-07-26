@@ -16,7 +16,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
-    "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm bun.lockb && bun install",
+    "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm -f bun.lock && bun install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "deploy:preview": "git checkout preview && git merge development && git push origin preview",
     "deploy:production": "git checkout main && git merge preview && git push origin main",

@@ -185,7 +185,7 @@ bun dev -- -p 3001
 ### TypeScript Errors
 ```bash
 # Regenerate types
-bun generate:types
+bun run generate:types
 
 # Clear Next.js cache
 rm -rf .next
@@ -204,7 +204,7 @@ bun payload migrate:status
 ### PayloadCMS Admin Issues
 ```bash
 # Regenerate admin import map
-bun generate:importmap
+bun run generate:importmap
 
 # Clear admin cache
 rm -rf .next
