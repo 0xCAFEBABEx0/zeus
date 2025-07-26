@@ -14,5 +14,14 @@
     "env": {
       "NODE_VERSION": "22"
     }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": false,
+      "preview": true
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
   }
 }

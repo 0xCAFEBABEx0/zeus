@@ -16,31 +16,62 @@ A modern website template built with [Payload CMS](https://payloadcms.com) and [
 - **Redirects Plugin** - URL redirection management
 - **Nested Docs** - Hierarchical content structure
 
-## Quick Start
+## Development Flow
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/w9be1tip0v/zeus.git
-   cd zeus
-   ```
+This project follows a **Development → Preview → Production** workflow using Vercel:
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+### 1. **Development (Local)**
+```bash
+# Clone and setup
+git clone https://github.com/w9be1tip0v/zeus.git
+cd zeus
+pnpm install
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   ```
+# Set up environment variables
+cp env.example .env.local
+# Edit .env.local with your local configuration
 
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+# Start development server
+pnpm dev
+```
 
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+**Access**: [http://localhost:3000](http://localhost:3000)
+
+### 2. **Preview (Staging)**
+```bash
+# Create and push to preview branch
+git checkout -b preview
+git push -u origin preview
+```
+
+**Access**: Vercel automatically creates a preview URL for each push to the `preview` branch
+
+### 3. **Production**
+```bash
+# Merge preview branch to main
+git checkout main
+git merge preview
+git push origin main
+```
+
+**Access**: Production URL (configured in Vercel)
+
+## Environment Configuration
+
+### Environment Variables
+- **Development**: Uses `.env.local`
+- **Preview**: Uses Vercel environment variables (staging)
+- **Production**: Uses Vercel environment variables (production)
+
+### Sentry Integration
+- **Development**: `development` environment
+- **Preview**: `staging` environment  
+- **Production**: `production` environment
+
+### Database
+- **Development**: Local or development database
+- **Preview**: Production database (read-only recommended)
+- **Production**: Production database
 
 ## Deployment
 
