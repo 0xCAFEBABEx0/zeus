@@ -7,6 +7,22 @@ interface VercelAnalytics {
   track: (event: string, properties?: Record<string, unknown>) => void;
 }
 
+// Vercel global objects interface
+interface VercelGlobals {
+  va?: VercelAnalytics;
+  _va?: VercelAnalytics;
+  si?: unknown;
+  _si?: unknown;
+  speedInsights?: unknown;
+  __VERCEL_SPEED_INSIGHTS__?: unknown;
+}
+
+// Type guard to safely access Vercel globals from window
+const getVercelGlobals = (): VercelGlobals => {
+  if (typeof window === 'undefined') return {}
+  return window as unknown as VercelGlobals
+}
+
 export const VercelInsightsTest: React.FC = () => {
   const [analyticsLoaded, setAnalyticsLoaded] = useState(false)
   const [speedInsightsLoaded, setSpeedInsightsLoaded] = useState(false)
@@ -18,16 +34,16 @@ export const VercelInsightsTest: React.FC = () => {
 
     // Check if Vercel Analytics is loaded
     const checkAnalytics = () => {
-      const win = window as any
-      if (win.va || win._va) {
+      const vercelGlobals = getVercelGlobals()
+      if (vercelGlobals.va || vercelGlobals._va) {
         setAnalyticsLoaded(true)
       }
     }
 
     // Check if Speed Insights is loaded
     const checkSpeedInsights = () => {
-      const win = window as any
-      if (win.si || win._si || win.speedInsights || win.__VERCEL_SPEED_INSIGHTS__) {
+      const vercelGlobals = getVercelGlobals()
+      if (vercelGlobals.si || vercelGlobals._si || vercelGlobals.speedInsights || vercelGlobals.__VERCEL_SPEED_INSIGHTS__) {
         setSpeedInsightsLoaded(true)
       }
     }
@@ -46,7 +62,8 @@ export const VercelInsightsTest: React.FC = () => {
   }, [])
 
   const triggerPageView = () => {
-    const analytics = (window as any).va as VercelAnalytics | undefined
+    const vercelGlobals = getVercelGlobals()
+    const analytics = vercelGlobals.va
     if (analytics?.track) {
       analytics.track('test-page-view', {
         timestamp: new Date().toISOString(),
@@ -55,7 +72,8 @@ export const VercelInsightsTest: React.FC = () => {
   }
 
   const triggerCustomEvent = () => {
-    const analytics = (window as any).va as VercelAnalytics | undefined
+    const vercelGlobals = getVercelGlobals()
+    const analytics = vercelGlobals.va
     if (analytics?.track) {
       analytics.track('test-custom-event', {
         action: 'button-click',
