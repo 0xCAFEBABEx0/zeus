@@ -1,7 +1,12 @@
 import { withSentryConfig } from '@sentry/nextjs'
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    // Enable Web Vitals tracking
+    webVitalsAttribution: ['CLS', 'LCP'],
+  },
+}
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:
@@ -27,6 +32,9 @@ export default withSentryConfig(nextConfig, {
 
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
+
+  // Hide deprecation warnings for client config files
+  hideSourceMaps: false,
 
   // Enables automatic instrumentation of Vercel Cron Monitors. (Does not yet work with App Router route handlers.)
   // See the following for more information:

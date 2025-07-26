@@ -4,7 +4,7 @@ This project has been configured with Sentry for error tracking, performance mon
 
 ## Configuration Files
 
-- `sentry.client.config.ts` - Client-side Sentry configuration
+- `src/instrumentation-client.ts` - Client-side Sentry configuration
 - `sentry.server.config.ts` - Server-side Sentry configuration  
 - `sentry.edge.config.ts` - Edge runtime Sentry configuration
 

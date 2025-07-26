@@ -7,6 +7,8 @@ This project follows a **Development → Preview → Production** workflow using
 ```
 Development (Local)
         ↓
+Development Branch
+        ↓
 Preview (Staging)
         ↓
 Production (Live)
@@ -15,7 +17,7 @@ Production (Live)
 ## Environment Details
 
 ### 1. Development Environment
-- **Branch**: Feature branches / local development
+- **Branch**: `development` / feature branches
 - **URL**: `http://localhost:3000`
 - **Environment**: `development`
 - **Sentry Environment**: `development`
@@ -53,6 +55,9 @@ pnpm run env:check
 
 #### 1. Feature Development
 ```bash
+# Switch to development branch
+git checkout development
+
 # Create feature branch
 git checkout -b feature/new-feature
 
@@ -60,19 +65,20 @@ git checkout -b feature/new-feature
 git add .
 git commit -m "Add new feature"
 
-# Push to GitHub
-git push origin feature/new-feature
+# Merge back to development
+git checkout development
+git merge feature/new-feature
+git push origin development
 ```
 
 #### 2. Preview Deployment
 ```bash
-# Switch to preview branch
+# Deploy development to preview
+pnpm run deploy:preview
+
+# Or manually:
 git checkout preview
-
-# Merge feature branch
-git merge feature/new-feature
-
-# Push to trigger preview deployment
+git merge development
 git push origin preview
 ```
 

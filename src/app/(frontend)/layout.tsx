@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 import { cn } from '@/utilities/ui'
 import { GeistMono } from 'geist/font/mono'
@@ -38,9 +38,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
           <Header />
           {children}
+          <Footer />
+          {/* Analytics and Speed Insights - enabled in production or when explicitly enabled */}
           <Analytics />
           <SpeedInsights />
-          <Footer />
         </Providers>
       </body>
     </html>
