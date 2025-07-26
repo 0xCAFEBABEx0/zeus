@@ -22,7 +22,7 @@ dist/
 .vercel
 
 # PayloadCMS
-payload.config.ts
+# payload.config.ts
 payload-types.ts
 
 # Database
