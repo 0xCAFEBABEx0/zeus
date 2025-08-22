@@ -6,6 +6,16 @@ import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
 
+// Validate critical environment variables
+// Skip validation in CI/test environments or when running type generation
+const isTypeGeneration = process.argv.includes('generate:types')
+const isCI = process.env.CI === 'true'
+const isTest = process.env.NODE_ENV === 'test'
+
+if (!process.env.POSTGRES_URL && !isTypeGeneration && !isCI && !isTest) {
+  throw new Error('CRITICAL: POSTGRES_URL environment variable is not set.')
+}
+
 import { Categories } from './collections/Categories'
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
@@ -61,7 +71,7 @@ export default buildConfig({
   editor: defaultLexical,
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: process.env.POSTGRES_URL || 'postgresql://dummy:dummy@localhost:5432/dummy',
     },
   }),
   collections: [Pages, Posts, Media, Categories, Users],

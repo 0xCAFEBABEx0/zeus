@@ -14,7 +14,7 @@ export const EnvironmentIndicator: React.FC = () => {
     setEnvironment(vercelEnv || env || 'unknown')
     
     // Only show in non-production environments
-    setIsVisible(env !== 'production' && vercelEnv !== 'production')
+    setIsVisible((vercelEnv || env) !== 'production')
   }, [])
 
   if (!isVisible) return null

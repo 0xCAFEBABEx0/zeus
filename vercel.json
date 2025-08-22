@@ -17,8 +17,9 @@
   },
   "git": {
     "deploymentEnabled": {
-      "main": false,
-      "preview": true
+      "main": true,
+      "preview": true,
+      "development": false
     }
   },
   "env": {

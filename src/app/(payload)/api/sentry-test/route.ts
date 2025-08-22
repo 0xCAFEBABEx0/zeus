@@ -2,6 +2,10 @@ import * as Sentry from "@sentry/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(_request: NextRequest) {
+  // Only allow access in development and preview environments
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production') {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
   try {
     // Test Sentry logging
     const { logger } = Sentry;
@@ -22,6 +26,11 @@ export async function GET(_request: NextRequest) {
 }
 
 export async function POST(_request: NextRequest) {
+  // Only allow access in development and preview environments
+  if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production') {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
   try {
     // Intentionally throw an error to test Sentry
     // myUndefinedFunction is intentionally not defined to test Sentry error tracking
