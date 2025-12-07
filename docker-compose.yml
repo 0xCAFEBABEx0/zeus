@@ -1,13 +1,51 @@
-version: '3'
+name: zeus-devcontainer
 
 services:
+  # Dev Container app service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development # 開発用ターゲットを指定
+    image: zeus-devcontainer-app
+    container_name: app-1
+    volumes:
+      - .:/workspace:cached
+      - node_modules:/workspace/node_modules
+    working_dir: /workspace
+    command: tail -f /dev/null
+    expose:
+      - '3000'
+    environment:
+      - NODE_ENV=development
+
+      - DATABASE_URI=postgres://postgres@postgres:5432/payload_db
+    depends_on:
+      - postgres
+    networks:
+      - zeus-network
+
   postgres:
-    image: postgres
-    ports:
-      - '54320:5432'
+    image: postgres:16
+    container_name: postgres-1
+    expose:
+      - '5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: payload_db # THIS MUST MATCH YOUR DB NAME IN .env
       POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - zeus-network
     env_file:
       - .env
+
+volumes:
+  node_modules:
+  postgres_data:
+
+
+networks:
+  zeus-network:
+    driver: bridge

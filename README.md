@@ -1,6 +1,8 @@
-# Payload CMS Website Template
+# Payload Website Template
 
-A modern website template built with [Payload CMS](https://payloadcms.com) and [Next.js](https://nextjs.org).
+<!-- Vercel Deploy Test - Updated at 2025-07-26 -->
+
+This is a [Payload](https://github.com/payloadcms/payload) website template perfect for a personal site, blog, or any content-driven website.
 
 ## Features
 
@@ -78,14 +80,7 @@ git push origin main
 
 This project is configured for deployment on Vercel with automatic deployments triggered by Git pushes.
 
-### Environment Variables
-
-Set the following environment variables in your Vercel project:
-
-- `PAYLOAD_SECRET` - Secret key for Payload CMS
-- `MONGODB_URI` - MongoDB connection string (if using MongoDB)
-- `POSTGRES_URL` - PostgreSQL connection string (if using PostgreSQL)
-- `SENTRY_DSN` - Sentry DSN for error tracking
+- See docs: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md), [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md), [docs/SENTRY_SETUP.md](./docs/SENTRY_SETUP.md)
 
 ## Sentry Integration
 
