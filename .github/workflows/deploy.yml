@@ -36,45 +36,48 @@ jobs:
       - name: Type check
         run: bun run generate:types
 
-  deploy-preview:
-    name: Deploy Preview
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/preview'
-    needs: lint
-    environment:
-      name: preview
-      url: ${{ steps.deploy.outputs.url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # Deployment jobs commented out until GitHub Secrets are configured
+  # Uncomment after setting up: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+  
+  # deploy-preview:
+  #   name: Deploy Preview
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/preview' && false  # Disabled until secrets are configured
+  #   needs: lint
+  #   environment:
+  #     name: preview
+  #     url: ${{ steps.deploy.outputs.url }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Deploy to Vercel (Preview)
-        id: deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #     - name: Deploy to Vercel (Preview)
+  #       id: deploy
+  #       uses: amondnet/vercel-action@v25
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 
-  deploy-production:
-    name: Deploy Production
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    needs: lint
-    environment:
-      name: production
-      url: ${{ steps.deploy.outputs.url }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # deploy-production:
+  #   name: Deploy Production
+  #   runs-on: ubuntu-latest
+  #   if: github.ref == 'refs/heads/main' && false  # Disabled until secrets are configured
+  #   needs: lint
+  #   environment:
+  #     name: production
+  #     url: ${{ steps.deploy.outputs.url }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Deploy to Vercel (Production)
-        id: deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod' 
+  #     - name: Deploy to Vercel (Production)
+  #       id: deploy
+  #       uses: amondnet/vercel-action@v25
+  #       with:
+  #         vercel-token: ${{ secrets.VERCEL_TOKEN }}
+  #         github-token: ${{ secrets.GITHUB_TOKEN }}
+  #         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+  #         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+  #         vercel-args: '--prod' 
