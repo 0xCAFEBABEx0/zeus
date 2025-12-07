@@ -1,15 +1,19 @@
+name: zeus-devcontainer
+
 services:
   # Dev Container app service
   app:
     build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
+      context: .
+      dockerfile: Dockerfile
       target: development # 開発用ターゲットを指定
+    image: zeus-devcontainer-app
+    container_name: app-1
     volumes:
-      - ..:/workspace:cached
+      - .:/workspace:cached
       - node_modules:/workspace/node_modules
     working_dir: /workspace
-    command: sleep infinity
+    command: tail -f /dev/null
     expose:
       - '3000'
     environment:
@@ -22,7 +26,8 @@ services:
       - zeus-network
 
   postgres:
-    image: postgres
+    image: postgres:16
+    container_name: postgres-1
     expose:
       - '5432'
     environment:
@@ -34,7 +39,7 @@ services:
     networks:
       - zeus-network
     env_file:
-      - ../.env
+      - .env
 
 volumes:
   node_modules:

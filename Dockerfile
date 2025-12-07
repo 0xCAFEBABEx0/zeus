@@ -41,7 +41,13 @@ RUN usermod -l vscode node && \
 USER vscode
 WORKDIR /home/vscode
 RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/home/vscode/.bun/bin:${PATH}"
+# ENV PATH for global availability
+ENV BUN_INSTALL="/home/vscode/.bun"
+ENV PATH="$BUN_INSTALL/bin:$PATH"
+
+# Ensure bun is in the path for vscode user by adding it to .bashrc (redundant but safe)
+RUN echo 'export BUN_INSTALL="$HOME/.bun"' >> ~/.bashrc && \
+    echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> ~/.bashrc
 
 # Set up workspace
 USER root
