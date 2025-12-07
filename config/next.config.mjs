@@ -6,10 +6,10 @@ const nextConfig = {
     // Enable Web Vitals tracking
     webVitalsAttribution: ['CLS', 'LCP'],
   },
-  
+
   // Enable standalone output for Docker
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
-  
+
   // Image configuration
   images: {
     domains: ['localhost'],
@@ -62,14 +62,6 @@ if (shouldUseSentry && hasSentryConfig) {
       disable: false,
       // Clean up source maps after upload for better security
       deleteSourcemapsAfterUpload: true,
-      // Custom source rewriting to improve source map references
-      rewriteSources: (source) => {
-        // Remove absolute paths and make sources relative
-        if (source.startsWith('webpack://')) {
-          return source.replace('webpack://', '~/')
-        }
-        return source.replace(process.cwd(), '~')
-      },
     },
 
     // Webpack configuration to improve source map generation
