@@ -70,7 +70,7 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "autoprefixer": "^10.4.19",
-    "checkly": "latest",
+    "checkly": "^6.9.5",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.5.7",
     "jiti": "^2",
@@ -91,6 +91,7 @@
   ],
   "overrides": {
     "@esbuild-kit/esm-loader": "npm:tsx@latest",
-    "@esbuild-kit/core-utils": "npm:tsx@latest"
+    "@esbuild-kit/core-utils": "npm:tsx@latest",
+    "glob": "^10.4.5"
   }
 }
