@@ -20,10 +20,7 @@ Sentry.init({
   // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
   tracesSampleRate: 1.0,
 
-  // Enable logs to be sent to Sentry
-  _experiments: {
-    enableLogs: true,
-  },
+
 
   // Define how likely Replay events are sampled.
   // This sets the sample rate to be 10%. You may want this to be 100% while
@@ -37,4 +34,3 @@ Sentry.init({
   debug: false,
 })
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart
