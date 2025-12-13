@@ -50,11 +50,7 @@ if (shouldUseSentry && hasSentryConfig) {
     // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
     tunnelRoute: '/monitoring',
 
-    // Automatically tree-shake Sentry logger statements to reduce bundle size
-    disableLogger: true,
 
-    // Enables automatic instrumentation of Vercel Cron Monitors.
-    automaticVercelMonitors: true,
 
     // Source map configuration using newer options
     sourcemaps: {
@@ -78,6 +74,14 @@ if (shouldUseSentry && hasSentryConfig) {
       }
       return config
     },
+
+    // Automatically tree-shake Sentry logger statements to reduce bundle size
+    treeshake: {
+      removeDebugLogging: true,
+    },
+
+    // Enables automatic instrumentation of Vercel Cron Monitors
+    automaticVercelMonitors: true,
   })
 } else {
   console.warn('Sentry configuration incomplete - building without Sentry source map upload')

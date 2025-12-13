@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/nextjs'
+
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
@@ -10,4 +10,7 @@ export async function register() {
   }
 }
 
-export const onRequestError = Sentry.captureRequestError
+export const onRequestError = async (err: Error, request: Request, context: unknown) => {
+  const Sentry = await import('@sentry/nextjs')
+  Sentry.captureRequestError(err, request as any, context as any)
+}
