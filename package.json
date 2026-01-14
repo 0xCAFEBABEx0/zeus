@@ -81,7 +81,7 @@
   },
   "packageManager": "bun@1.2.19",
   "engines": {
-    "node": ">=22.22.0",
+    "node": ">=22.22.0 <23",
     "bun": ">=1.2.0"
   },
   "trustedDependencies": [
