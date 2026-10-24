@@ -46,14 +46,16 @@ Do not set `COOKIE_DOMAIN` for deployments on `*.vercel.app` or `localhost`: the
 
 ## Vercel setup
 
-Create one Vercel project per app from the same Git repository:
+Each app needs its own Vercel project connected to the same Git repository. The existing project is kept for the website (Root Directory changed to `apps/web`, so its domain, environment variables and Analytics history stay); a new project is created for the CMS:
 
-| | zeus-web | zeus-cms |
+| | existing project (web) | new project (cms) |
 |---|---|---|
 | Root Directory | `apps/web` | `apps/cms` |
 | Framework | Next.js | Next.js |
 | Include files outside the Root Directory | enabled (default) | enabled (default) |
 | Production domain | `ausor.ai` (+ `www.ausor.ai` redirect) | `cms.ausor.ai` |
+
+Change the existing project's Root Directory only when the restructure is about to reach `main` (or while checking `preview`): until then a redeploy of `main` with the old layout would fail. The live production deployment keeps running either way.
 
 Install and build commands can stay on the defaults: Vercel detects the Bun workspace from the root `bun.lock` and installs all workspaces. Each app's `vercel.json` enables deployments for `main` and `preview` only; the Payload jobs cron is defined on the CMS.
 
