@@ -18,6 +18,8 @@ const nextConfig = {
   images: {
     // Next.js 16 only allows quality 75 by default; ImageMedia requests quality 100
     qualities: [75, 100],
+    // Next.js 16 blocks optimizing images that resolve to local IPs; media is served from localhost in development
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== 'production',
     remotePatterns: [
       // Replaces the deprecated `domains: ['localhost']`
       { protocol: 'http', hostname: 'localhost' },
