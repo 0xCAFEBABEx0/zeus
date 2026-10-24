@@ -1,4 +1,5 @@
-import { withSentryConfig } from '@sentry/nextjs'
+import { withPayload } from '@payloadcms/next/withPayload'
+import { withSentryConfig } from '@sentry/nextjs/config'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -7,13 +8,20 @@ const nextConfig = {
     webVitalsAttribution: ['CLS', 'LCP'],
   },
 
+  // Sentry v11 requires its runtime injection hooks to stay unbundled, even when withSentryConfig is not applied
+  serverExternalPackages: ['@sentry/server-runtime-injection'],
+
   // Enable standalone output for Docker
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
   // Image configuration
   images: {
-    domains: ['localhost'],
+    // Next.js 16 only allows quality 75 by default; ImageMedia requests quality 100
+    qualities: [75, 100],
     remotePatterns: [
+      // Replaces the deprecated `domains: ['localhost']`
+      { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'https', hostname: 'localhost' },
       {
         protocol: 'http',
         hostname: 'localhost',
@@ -28,10 +36,12 @@ const nextConfig = {
 const shouldUseSentry = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 const hasSentryConfig = process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
 
-let finalConfig = nextConfig
+// withPayload keeps Payload's server-only packages (drizzle-kit, esbuild, libsql, ...) out of the
+// Turbopack bundle, which Next.js 16 uses by default for both dev and build
+let finalConfig = withPayload(nextConfig, { devBundleServerPackages: false })
 
 if (shouldUseSentry && hasSentryConfig) {
-  finalConfig = withSentryConfig(nextConfig, {
+  finalConfig = withSentryConfig(finalConfig, {
     // For all available options, see:
     // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
@@ -50,8 +60,6 @@ if (shouldUseSentry && hasSentryConfig) {
     // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
     tunnelRoute: '/monitoring',
 
-
-
     // Source map configuration using newer options
     sourcemaps: {
       // Use improved source map handling
@@ -60,33 +68,23 @@ if (shouldUseSentry && hasSentryConfig) {
       deleteSourcemapsAfterUpload: true,
     },
 
-    // Webpack configuration to improve source map generation
-    webpack: (config, { isServer, dev }) => {
-      // Only modify source map settings for production builds
-      if (!dev) {
-        // Use hidden source maps for client-side to prevent public exposure
-        if (!isServer) {
-          config.devtool = 'hidden-source-map'
-        } else {
-          // Use regular source maps for server-side
-          config.devtool = 'source-map'
-        }
-      }
-      return config
-    },
-
     // Automatically tree-shake Sentry logger statements to reduce bundle size
-    treeshake: {
-      removeDebugLogging: true,
+    bundleSizeOptimizations: {
+      excludeDebugStatements: true,
     },
 
-    // Enables automatic instrumentation of Vercel Cron Monitors
-    automaticVercelMonitors: true,
+    // Options that only apply to webpack builds (Next.js 16 builds with Turbopack by default)
+    webpack: {
+      // Enables automatic instrumentation of Vercel Cron Monitors
+      automaticVercelMonitors: true,
+    },
   })
 } else {
   console.warn('Sentry configuration incomplete - building without Sentry source map upload')
   if (shouldUseSentry && !hasSentryConfig) {
-    console.info('Set SENTRY_ORG and SENTRY_PROJECT environment variables to enable Sentry source maps')
+    console.info(
+      'Set SENTRY_ORG and SENTRY_PROJECT environment variables to enable Sentry source maps',
+    )
   }
 }
 
