@@ -1,5 +1,7 @@
 # Deployment Guide
 
+> The CMS (`apps/cms`, cms.ausor.ai) and the website (`apps/web`, ausor.ai) are deployed as two Vercel projects from this repository. See [ARCHITECTURE.md](./ARCHITECTURE.md) for the project settings and environment variables.
+
 This project follows a **Development → Preview → Production** workflow using Vercel and GitHub.
 
 ## Workflow Overview

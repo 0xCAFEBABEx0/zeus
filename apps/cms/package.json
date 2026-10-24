@@ -1,0 +1,28 @@
+{
+  "name": "@zeus/cms",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Payload CMS admin and API (cms.ausor.ai)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation next build",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev --turbopack --port 3001",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start --port 3001",
+    "typecheck": "tsc --noEmit",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload"
+  },
+  "dependencies": {
+    "@payloadcms/next": "^3.92.0",
+    "@sentry/nextjs": "^11.9.0",
+    "@zeus/core": "workspace:*",
+    "cross-env": "^10.1.0",
+    "graphql": "^16.14.2",
+    "next": "16.4.3",
+    "payload": "^3.92.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}
