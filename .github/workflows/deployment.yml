@@ -33,8 +33,11 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      - name: Type check
+      - name: Generate Payload types
         run: bun run generate:types
+
+      - name: Type check (apps/cms, apps/web)
+        run: bun run typecheck
 
   # Deployment jobs commented out until GitHub Secrets are configured
   # Uncomment after setting up: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID

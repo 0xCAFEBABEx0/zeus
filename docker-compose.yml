@@ -15,7 +15,8 @@ services:
     working_dir: /workspace
     command: tail -f /dev/null
     expose:
-      - '3000'
+      - '3000' # apps/web
+      - '3001' # apps/cms
     environment:
       - NODE_ENV=development
 
