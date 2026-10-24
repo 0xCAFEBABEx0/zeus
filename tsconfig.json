@@ -4,7 +4,6 @@
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
-    "baseUrl": ".",
     "esModuleInterop": true,
     "target": "ES2022",
     "lib": [
@@ -18,7 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
@@ -35,6 +34,9 @@
       ],
       "@/*": [
         "./src/*"
+      ],
+      "src/*": [
+        "./src/*"
       ]
     }
   },
@@ -44,9 +46,11 @@
     ".next/types/**/*.ts",
     "config/redirects.js",
     "config/next.config.mjs",
-    "config/next-sitemap.config.cjs"
+    "config/next-sitemap.config.cjs",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "__checks__"
   ]
 }
