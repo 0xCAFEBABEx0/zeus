@@ -57,7 +57,7 @@ Each app needs its own Vercel project connected to the same Git repository. The 
 
 Change the existing project's Root Directory only when the restructure is about to reach `main` (or while checking `preview`): until then a redeploy of `main` with the old layout would fail. The live production deployment keeps running either way.
 
-Install and build commands can stay on the defaults: Vercel detects the Bun workspace from the root `bun.lock` and installs all workspaces. Each app's `vercel.json` enables deployments for `main` and `preview` only; the Payload jobs cron is defined on the CMS.
+Each app's `vercel.json` sets `buildCommand: bun run build`, which takes precedence over any Build Command override left in the project settings. The install command can stay on the default: Vercel detects the Bun workspace from the root `bun.lock` and installs all workspaces. Each app's `vercel.json` enables deployments for `main` and `preview` only; the Payload jobs cron is defined on the CMS.
 
 DNS: point `ausor.ai` (apex `A 76.76.21.21`) and `cms.ausor.ai` (`CNAME cname.vercel-dns.com`) at Vercel, or use the exact records Vercel shows when you add each domain.
 
