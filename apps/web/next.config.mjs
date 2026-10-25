@@ -6,6 +6,16 @@ const cmsURL = new URL(process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3001
 // Public website, served at ausor.ai
 export default createNextConfig(
   {
+    async redirects() {
+      // The admin panel moved to the CMS; keep existing /admin links (seed content, bookmarks) working
+      return [
+        {
+          source: '/admin/:path*',
+          destination: `${cmsURL.origin}/admin/:path*`,
+          permanent: false,
+        },
+      ]
+    },
     images: {
       // Next.js 16 only allows quality 75 by default; ImageMedia requests quality 100
       qualities: [75, 100],
