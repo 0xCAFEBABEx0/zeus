@@ -41,7 +41,16 @@ or let Payload push the schema automatically: in development (`NODE_ENV` not `pr
 
 ### Dev Container
 
-`.devcontainer/devcontainer.json` starts `docker-compose.yml`: an `app` container built from the `development` target of the `Dockerfile` (Node 24.22.1 + Bun, user `vscode`) and a `postgres:16` container with database `payload_db` and trust authentication. Inside the container use:
+`.devcontainer/devcontainer.json` starts `docker-compose.yml`: an `app` container built from the `development` target of the `Dockerfile` (Node 24.22.1 + Bun, user `vscode`) and a `postgres:16` container with database `payload_db` and trust authentication.
+
+The `postgres` service loads a repository-root `.env` (`env_file: .env`), so Compose refuses to start without it. Before opening the Dev Container, use the root-`.env` variant of the setup above:
+
+```bash
+cp .env.example .env
+ln -s ../../.env apps/cms/.env && ln -s ../../.env apps/web/.env
+```
+
+and set the database URL in it to the Compose service:
 
 ```
 POSTGRES_URL=postgres://postgres@postgres:5432/payload_db
