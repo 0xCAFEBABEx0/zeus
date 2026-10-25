@@ -1,0 +1,3 @@
+[install]
+# Payload, React and Next.js must resolve to a single copy shared by every workspace
+linker = "hoisted"

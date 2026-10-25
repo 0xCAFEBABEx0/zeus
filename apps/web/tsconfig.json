@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "react": [
+        "../../node_modules/@types/react"
+      ],
+      "@/*": [
+        "../../packages/core/src/*"
+      ],
+      "@payload-config": [
+        "../../packages/core/src/payload.config.ts"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "../../packages/core/src/**/*.ts",
+    "../../packages/core/src/**/*.tsx",
+    "next-sitemap.config.cjs"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

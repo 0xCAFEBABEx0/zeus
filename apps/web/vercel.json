@@ -1,0 +1,18 @@
+{
+  "buildCommand": "bun run build",
+  "build": {
+    "env": {
+      "NODE_VERSION": "22"
+    }
+  },
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "preview": true,
+      "development": false
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}

@@ -4,10 +4,18 @@
 
 This is a [Payload](https://github.com/payloadcms/payload) website template perfect for a personal site, blog, or any content-driven website.
 
+The CMS and the website are separate Next.js apps in one Bun workspace, deployed separately:
+
+- `apps/cms` → **cms.ausor.ai** (Payload admin, API, media)
+- `apps/web` → **ausor.ai** (public website)
+- `packages/core` → shared Payload config, collections, blocks and components
+
+See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for how they connect, the environment variables and the Vercel setup.
+
 ## Features
 
 - **Payload CMS** - Headless CMS with admin panel
-- **Next.js 15** - React framework with App Router
+- **Next.js 16** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Bun** - Fast package manager and runtime (17x faster than pnpm)
 - **Tailwind CSS** - Utility-first CSS framework
@@ -30,15 +38,16 @@ git clone https://github.com/w9be1tip0v/zeus.git
 cd zeus
 bun install
 
-# Set up environment variables
-cp env.example .env.local
-# Edit .env.local with your local configuration
+# Set up environment variables (each app reads its own .env)
+cp .env.example apps/cms/.env
+cp .env.example apps/web/.env
+# Edit both files with your local configuration
 
-# Start development server
-bun dev
+# Start both apps
+bun run dev
 ```
 
-**Access**: [http://localhost:3000](http://localhost:3000)
+**Access**: website [http://localhost:3000](http://localhost:3000), CMS [http://localhost:3001/admin](http://localhost:3001/admin)
 
 ### 2. **Preview (Staging)**
 ```bash
@@ -106,20 +115,21 @@ Visit `/vercel-insights-test` to test analytics functionality:
 
 ### Available Scripts
 
-- `bun dev` - Start development server
-- `bun run build` - Build for production
-- `bun run start` - Start production server
+- `bun run dev` - Start both apps (`dev:cms` / `dev:web` for one)
+- `bun run build` - Build both apps (`build:cms` / `build:web` for one)
 - `bun run lint` - Run ESLint
-- `bun run generate:types` - Generate TypeScript types
+- `bun run typecheck` - Type check both apps
+- `bun run generate:types` - Generate Payload TypeScript types
 - `bun run generate:importmap` - Generate import map for admin
 
 ### Project Structure
 
 ```
-src/
-├── app/                    # Next.js App Router
-│   ├── (frontend)/        # Public-facing pages
-│   └── (payload)/         # Payload CMS admin
+apps/
+├── cms/src/app/(payload)/  # Payload admin + API (cms.ausor.ai)
+└── web/src/app/(frontend)/ # Public-facing pages (ausor.ai)
+packages/core/src/
+├── payload.config.ts      # Payload config shared by both apps
 ├── blocks/                # Content blocks
 ├── collections/           # Payload CMS collections
 ├── components/            # React components
