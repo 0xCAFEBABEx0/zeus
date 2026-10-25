@@ -1,149 +1,61 @@
-# Payload Website Template
+# Zeus
 
-<!-- Vercel Deploy Test - Updated at 2025-07-26 -->
+Zeus is the content platform behind [ausor.ai](https://ausor.ai). It is built on [Payload CMS](https://payloadcms.com) and Next.js, started from the Payload website template.
 
-This is a [Payload](https://github.com/payloadcms/payload) website template perfect for a personal site, blog, or any content-driven website.
+The CMS and the website are separate Next.js apps in one Bun workspace, deployed as two Vercel projects:
 
-The CMS and the website are separate Next.js apps in one Bun workspace, deployed separately:
-
-- `apps/cms` → **cms.ausor.ai** (Payload admin, API, media)
+- `apps/cms` → **cms.ausor.ai** (Payload admin, REST/GraphQL API, media, scheduled jobs)
 - `apps/web` → **ausor.ai** (public website)
 - `packages/core` → shared Payload config, collections, blocks and components
 
-See [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) for how they connect, the environment variables and the Vercel setup.
+## Documentation
 
-## Features
+All project documentation lives in [`docs/`](./docs/README.md):
 
-- **Payload CMS** - Headless CMS with admin panel
-- **Next.js 16** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Bun** - Fast package manager and runtime (17x faster than pnpm)
-- **Tailwind CSS** - Utility-first CSS framework
-- **Sentry Integration** - Error tracking and performance monitoring
-- **Vercel Analytics & Speed Insights** - Performance monitoring
-- **Form Builder** - Dynamic form creation
-- **SEO Plugin** - Built-in SEO management
-- **Search Plugin** - Full-text search capabilities
-- **Redirects Plugin** - URL redirection management
-- **Nested Docs** - Hierarchical content structure
+- [Specification](./docs/SPECIFICATION.md): what the system does
+- [Architecture](./docs/ARCHITECTURE.md) and [Design](./docs/DESIGN.md): how it is built
+- [Data model](./docs/DATA_MODEL.md) and [HTTP API](./docs/API.md)
+- [Configuration](./docs/CONFIGURATION.md): environment variables
+- [Development](./docs/DEVELOPMENT.md) and [Development workflow](./docs/DEVELOPMENT_WORKFLOW.md)
+- [Deployment](./docs/DEPLOYMENT.md) and [Operations](./docs/OPERATIONS.md)
+- [Known issues](./docs/KNOWN_ISSUES.md)
 
-## Development Flow
+## Quick start
 
-This project follows a **Development → Preview → Production** workflow using Vercel:
+Requires Node.js 24.22.1, Bun 1.4.4 and a PostgreSQL database.
 
-### 1. **Development (Local)**
 ```bash
-# Clone and setup
-git clone https://github.com/w9be1tip0v/zeus.git
+git clone https://github.com/0xCAFEBABEx0/zeus.git
 cd zeus
 bun install
 
-# Set up environment variables (each app reads its own .env)
 cp .env.example apps/cms/.env
 cp .env.example apps/web/.env
-# Edit both files with your local configuration
+# edit both files (see docs/CONFIGURATION.md)
 
-# Start both apps
 bun run dev
 ```
 
-**Access**: website [http://localhost:3000](http://localhost:3000), CMS [http://localhost:3001/admin](http://localhost:3001/admin)
+- Website: http://localhost:3000
+- CMS: http://localhost:3001/admin
 
-### 2. **Preview (Staging)**
-```bash
-# Create and push to preview branch
-git checkout -b preview
-git push -u origin preview
-```
+## Common scripts
 
-**Access**: Vercel automatically creates a preview URL for each push to the `preview` branch
+| Script | Description |
+|---|---|
+| `bun run dev` | Start both apps (`dev:cms` / `dev:web` for one) |
+| `bun run build` | Build both apps (`build:cms` / `build:web` for one) |
+| `bun run lint` | ESLint |
+| `bun run typecheck` | Type check both apps |
+| `bun run generate:types` | Regenerate Payload TypeScript types |
+| `bun run generate:importmap` | Regenerate the admin import map |
 
-### 3. **Production**
-```bash
-# Merge preview branch to main
-git checkout main
-git merge preview
-git push origin main
-```
+See [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md#scripts) for the full list.
 
-**Access**: Production URL (configured in Vercel)
+## Release flow
 
-## Environment Configuration
-
-### Environment Variables
-- **Development**: Uses `.env.local`
-- **Preview**: Uses Vercel environment variables (staging)
-- **Production**: Uses Vercel environment variables (production)
-
-### Sentry Integration
-- **Development**: `development` environment
-- **Preview**: `staging` environment  
-- **Production**: `production` environment
-
-### Database
-- **Development**: Local or development database
-- **Preview**: Production database (read-only recommended)
-- **Production**: Production database
-
-## Deployment
-
-This project is configured for deployment on Vercel with automatic deployments triggered by Git pushes.
-
-- See docs: [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md), [docs/DEVELOPMENT.md](./docs/DEVELOPMENT.md), [docs/SENTRY_SETUP.md](./docs/SENTRY_SETUP.md)
-
-## Sentry Integration
-
-This project includes comprehensive Sentry integration for error tracking, performance monitoring, and logging.
-
-### Test Sentry Features
-
-Visit `/sentry-test` to test Sentry functionality:
-- Error tracking with `myUndefinedFunction()`
-- Performance monitoring with custom spans
-- Structured logging
-- API error tracking
-
-### Test Vercel Analytics & Speed Insights
-
-Visit `/vercel-insights-test` to test analytics functionality:
-- Check if Analytics and Speed Insights are loaded
-- Test custom event tracking
-- Debug environment configuration
-- View troubleshooting tips
-
-## Development
-
-### Available Scripts
-
-- `bun run dev` - Start both apps (`dev:cms` / `dev:web` for one)
-- `bun run build` - Build both apps (`build:cms` / `build:web` for one)
-- `bun run lint` - Run ESLint
-- `bun run typecheck` - Type check both apps
-- `bun run generate:types` - Generate Payload TypeScript types
-- `bun run generate:importmap` - Generate import map for admin
-
-### Project Structure
-
-```
-apps/
-├── cms/src/app/(payload)/  # Payload admin + API (cms.ausor.ai)
-└── web/src/app/(frontend)/ # Public-facing pages (ausor.ai)
-packages/core/src/
-├── payload.config.ts      # Payload config shared by both apps
-├── blocks/                # Content blocks
-├── collections/           # Payload CMS collections
-├── components/            # React components
-├── fields/                # Custom form fields
-├── heros/                 # Hero section components
-├── plugins/               # Payload CMS plugins
-├── providers/             # React context providers
-└── utilities/             # Utility functions
-```
+`development` → `preview` (Vercel Preview) → `main` (Production, via pull request). Details in [docs/DEVELOPMENT_WORKFLOW.md](./docs/DEVELOPMENT_WORKFLOW.md).
 
 ## License
 
 MIT
-
----
-
-**Deployment Trigger**: This commit triggers a new Vercel deployment.
