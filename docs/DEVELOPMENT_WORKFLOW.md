@@ -1,202 +1,75 @@
-# Development Workflow
+# Development workflow
 
-## 🎯 Branch Strategy
-
-### Branch Structure
+## Branches
 
 ```
-main (production) ← preview (staging) ← development (dev)
-     🚀                   🔄                  🔧
+development ──merge──▶ preview ──pull request──▶ main
+ (not deployed)        (Preview)                 (Production)
 ```
 
-| Branch        | Purpose                  | Deployment                | Direct Push       |
-| ------------- | ------------------------ | ------------------------- | ----------------- |
-| `development` | 🔧 Development & Testing | ❌ None                   | ✅ Allowed        |
-| `preview`     | 🔄 Staging & Review      | ✅ Preview Environment    | ⚠️ Limited        |
-| `main`        | 🚀 Production            | ✅ Production Environment | ❌ **Restricted** |
+| Branch | Purpose | Deployed to | How changes arrive |
+|---|---|---|---|
+| `development` | Integration of day-to-day work | Nothing | Direct push (feature branches optional) |
+| `preview` | Staging; what is about to ship | Vercel Preview (`preview.ausor.ai`) | Direct push: merge `development` into it |
+| `main` | Production | Vercel Production (`ausor.ai`, `cms.ausor.ai`) | Pull request from `preview` only |
+| `hotfix/*` | Urgent production fixes | Nothing until merged | Branch from `main`, PR into `main` |
 
-## 📋 Recommended Development Flow
+No pull requests are needed for `development` and `preview`.
 
-### 1. Development Phase
+## Normal change
 
 ```bash
-# Start new feature/fix
 git checkout development
 git pull origin development
-
-# Make changes
-# ... your development work ...
-
-# Commit and push
-git add .
-git commit -m "feat: implement new feature"
+# ... make the change, run lint / generate:types / typecheck ...
+git commit -m "feat: add newsletter block"
 git push origin development
-```
 
-**Result**:
-
-- ✅ GitHub Actions runs tests & linting
-- ❌ No deployment (fast feedback)
-
-### 2. Staging Phase
-
-```bash
-# Create PR: development → preview
-# Via GitHub UI or:
-gh pr create --base preview --head development --title "feat: new feature for review"
-```
-
-**Result**:
-
-- ✅ Code review process
-- ✅ Deploy to Preview environment
-- ✅ Staging environment testing
-
-### 3. Production Phase
-
-```bash
-# After preview testing, create PR: preview → main
-gh pr create --base main --head preview --title "release: deploy to production"
-```
-
-**Result**:
-
-- ✅ Final review & approval
-- ✅ Deploy to Production environment
-- ✅ Controlled production release
-
-## 🔒 Branch Protection Setup
-
-### Recommended GitHub Settings
-
-#### Main Branch Protection
-
-```
-Repository Settings → Branches → Add protection rule
-
-Branch pattern: main
-☑️ Restrict pushes that create files
-☑️ Require a pull request before merging
-  ☑️ Require approvals (1+)
-  ☑️ Dismiss stale PR approvals when new commits are pushed
-  ☑️ Require review from code owners
-☑️ Require status checks to pass before merging
-  ☑️ Require branches to be up to date before merging
-  ☑️ GitHub Actions workflows
-☑️ Require conversation resolution before merging
-☑️ Include administrators
-```
-
-#### Preview Branch Protection (Optional)
-
-```
-Branch pattern: preview
-☑️ Require a pull request before merging
-☑️ Require status checks to pass before merging
-```
-
-## 🚀 Quick Commands
-
-### Development to Preview
-
-```bash
-# Method 1: GitHub CLI
-gh pr create --base preview --head development
-
-# Method 2: Git + GitHub UI
-git push origin development
-# Then create PR via GitHub web interface
-```
-
-### Preview to Production
-
-```bash
-# Method 1: GitHub CLI
-gh pr create --base main --head preview
-
-# Method 2: Git + GitHub UI
-git push origin preview
-# Then create PR via GitHub web interface
-```
-
-## ⚠️ Emergency Procedures
-
-### Hotfix for Production
-
-```bash
-# 1. Create hotfix branch from main
-git checkout main
-git pull origin main
-git checkout -b hotfix/critical-fix
-
-# 2. Make minimal fix
-# ... fix the critical issue ...
-
-# 3. Push and create emergency PR
-git push origin hotfix/critical-fix
-gh pr create --base main --head hotfix/critical-fix --title "hotfix: critical production fix"
-
-# 4. After merge, sync back to preview and development
+# Ship to Preview
 git checkout preview
-git pull origin main
-git push origin preview
-
-git checkout development
 git pull origin preview
-git push origin development
+git merge development        # same as `bun run deploy:preview`
+git push origin preview
 ```
 
-## 🔍 Workflow Validation
+Then:
 
-### Automated Checks
+1. Wait for CI and both Vercel preview deployments, and check the change on Preview.
+2. If the change includes a schema migration, apply it to the target database first (see [DEPLOYMENT.md](./DEPLOYMENT.md#database-changes)).
+3. Open a pull request from `preview` into `main`, written in English, and merge it once checks pass.
+4. Verify production.
 
-- ✅ **Development**: Tests & linting only
-- ✅ **Preview PR**: Code validation + flow verification
-- ✅ **Production PR**: Enhanced validation + deployment approval
-- ⚠️ **Direct main push**: Warning + guidance
+## Commits and pull requests
 
-### Manual Reviews
+- Commit messages, pull request titles and descriptions, code comments and documentation are written in **English**.
+- Use [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `chore:`, `ci:`, `refactor:`, `perf:`, `test:`. Keep the subject under about 72 characters and explain the why in the body.
+- Keep commits focused; do not mix formatting-only changes with behaviour changes.
+- A `preview` → `main` pull request should summarise what is being released, any manual steps (database migrations, new environment variables, Vercel settings) and how it was verified on Preview.
+- Assign the pull request to the repository owner.
 
-- 📋 **Code Review**: Required for preview → main
-- 🧪 **Staging Test**: Manual testing in preview environment
-- ✅ **Production Approval**: Final sign-off before production
+## Continuous integration
 
-## 📊 Environment URLs
+| Workflow | Trigger | Jobs |
+|---|---|---|
+| `deploy.yml` / `deployment.yml` ("Deploy to Vercel") | Push to `main` or `preview`, PR into `main` | Install with Bun (frozen lockfile), `bun run lint`, `bun run generate:types`, `bun run typecheck`. The Vercel deploy jobs are commented out; deployments come from the Vercel Git integration. |
+| `codeql.yml` | Push to `main`, `preview`, `development`; PR into `main`; weekly (Monday 10:36 UTC) | CodeQL analysis for JavaScript/TypeScript |
 
-- **Development**: `http://localhost:3000`
-- **Preview**: `https://zeus-git-preview-[team].vercel.app`
-- **Production**: `https://zeus-[team].vercel.app`
+The two "Deploy to Vercel" workflows are identical, so each run appears twice; see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md). Pushes to `development` only run CodeQL, so run the checks locally before pushing.
 
-## 🆘 Troubleshooting
+## Hotfixes
 
-### "Direct push to main" Warning
-
-```
-⚠️ WARNING: Direct push to main branch detected!
-
-Solution:
-1. Set up branch protection rules
-2. Use PR workflow: preview → main
-```
-
-### Failed Status Checks
-
-```
-❌ Status checks failing
-
-Solution:
-1. Check GitHub Actions logs
-2. Fix issues in development branch
-3. Create new PR after fixes
+```bash
+git checkout main && git pull origin main
+git checkout -b hotfix/<short-name>
+# fix, commit, push, open a PR into main and merge it
+git checkout preview && git pull origin preview && git merge main && git push origin preview
+git checkout development && git pull origin development && git merge preview && git push origin development
 ```
 
-### Deployment Issues
+Merge the fix back so `preview` and `development` do not reintroduce the bug.
 
-```
-❌ Deployment not triggered
+## Recommended repository settings
 
-Check:
-1. Vercel Git integration settings
-2. Deploy hooks configuration
-3. Environment variables setup
-```
+- Protect `main`: require a pull request and passing status checks ("Lint and Type Check"), block force pushes.
+- Leave `development` and `preview` open for direct pushes, but block force pushes.
+- Enable Dependabot or Renovate for dependency updates and review Payload/Next.js upgrades on Preview before merging.
