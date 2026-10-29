@@ -4,7 +4,7 @@
 
 | Tool | Version | Notes |
 |---|---|---|
-| Node.js | 24.22.1 | `.nvmrc`; `engines` allows `>=24.22.1 <25` |
+| Node.js | 26.13.0 | `.nvmrc`; `engines` allows `>=26.13.0 <27` |
 | Bun | 1.4.4 | `packageManager` in `package.json`; used for installs and scripts |
 | PostgreSQL | 16 recommended | Local server, Docker, or a hosted development database |
 | Git | any recent | |
@@ -41,7 +41,7 @@ or let Payload push the schema automatically: in development (`NODE_ENV` not `pr
 
 ### Dev Container
 
-`.devcontainer/devcontainer.json` starts `docker-compose.yml`: an `app` container built from the `development` target of the `Dockerfile` (Node 24.22.1 + Bun, user `vscode`) and a `postgres:16` container with database `payload_db` and trust authentication.
+`.devcontainer/devcontainer.json` starts `docker-compose.yml`: an `app` container built from the `development` target of the `Dockerfile` (Node 26.13.0 + Bun, user `vscode`) and a `postgres:16` container with database `payload_db` and trust authentication.
 
 The `postgres` service loads a repository-root `.env` (`env_file: .env`), so Compose refuses to start without it. Before opening the Dev Container, use the root-`.env` variant of the setup above:
 
