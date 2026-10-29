@@ -22,7 +22,7 @@ All project documentation lives in [`docs/`](./docs/README.md):
 
 ## Quick start
 
-Requires Node.js 24.22.1, Bun 1.4.4 and a PostgreSQL database.
+Requires Node.js 26.13.0, Bun 1.4.4 and a PostgreSQL database.
 
 ```bash
 git clone https://github.com/0xCAFEBABEx0/zeus.git
