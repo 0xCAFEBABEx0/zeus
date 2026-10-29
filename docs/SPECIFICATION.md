@@ -94,4 +94,4 @@ Out of scope (not implemented): public user accounts or sign-up, comments, e-com
 | Privacy | Author e-mails are not exposed | Authors are copied into `populatedAuthors` with id and name only |
 | Observability | Errors and performance are tracked per app | Sentry (events tagged `app: cms` / `app: web`), Vercel Analytics and Speed Insights on the website |
 | Maintainability | One source of truth for the content model | Both apps import the same Payload config from `packages/core` |
-| Runtime | Supported versions are pinned | Node.js 24.22.1 (`.nvmrc`, `engines`), Bun 1.4.4 |
+| Runtime | Supported versions are pinned | Node.js 26.13.0 (`.nvmrc`, `engines`), Bun 1.4.4 |

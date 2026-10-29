@@ -24,7 +24,7 @@ Both projects belong to the same Vercel team and are connected to this repositor
 | Include files outside the Root Directory | Enabled (default) | Enabled (default) |
 | Build command | `bun run build` (from `vercel.json`) | `bun run build` (from `vercel.json`) |
 | Install command | Default (Vercel detects the Bun workspace from the root `bun.lock`) | Default |
-| Node.js | 24 (`NODE_VERSION` in `vercel.json`) | 24 |
+| Node.js | 26 (`NODE_VERSION` in `vercel.json`) | 26 |
 | Production domains | `ausor.ai`, `www.ausor.ai` → redirect | `cms.ausor.ai` |
 | Preview domain | `preview.ausor.ai` | Vercel preview URL |
 | Cron | — | `GET /api/payload-jobs/run` at `0 0 * * *` (UTC) |

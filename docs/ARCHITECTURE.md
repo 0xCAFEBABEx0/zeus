@@ -12,7 +12,7 @@ Zeus is a Bun workspace with two Next.js apps that are deployed separately and s
 
 | Layer | Technology |
 |---|---|
-| Runtime | Node.js 24.22.1, Bun 1.4.4 (package manager and script runner) |
+| Runtime | Node.js 26.13.0, Bun 1.4.4 (package manager and script runner) |
 | Framework | Next.js 16 (App Router, Turbopack), React 19 |
 | CMS | Payload 3 (`@payloadcms/next`, Lexical rich text) |
 | Payload plugins | redirects, nested-docs, SEO, form-builder, search, Vercel Blob storage, Payload Cloud |
