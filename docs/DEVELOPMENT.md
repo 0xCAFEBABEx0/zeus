@@ -140,7 +140,8 @@ This is what CI runs. Run `bun run build` too when you touched `next.config`, `a
 | Preview returns 403 "You are not allowed" right away | `PREVIEW_SECRET` differs between the apps |
 | Edits do not show up on the website | Check the CMS log for `Website revalidation failed`; `REVALIDATION_SECRET` must match and `NEXT_PUBLIC_SERVER_URL` must reach the website |
 | Website pages fail with `CMS unreachable` or `CMS request failed` | Start the CMS and check `NEXT_PUBLIC_CMS_URL` in `apps/web/.env` |
-| `CMS request redirected to ...` on a Preview deployment | The CMS preview is behind Deployment Protection; set `CMS_PROTECTION_BYPASS` on the web project |
+| `CMS request redirected to https://vercel.com/...` on a Preview deployment | The CMS preview is behind Deployment Protection; set `CMS_PROTECTION_BYPASS` on the web project |
+| `CMS request redirected to` another host | `NEXT_PUBLIC_CMS_URL` is not the CMS's own origin (for example a domain that Vercel redirects); set it to the origin in the message |
 | Images fail to load | `NEXT_PUBLIC_CMS_URL` must match the CMS origin that serves `/api/media/file/*` |
 | Admin shows "component not found" | `bun run generate:importmap` |
 | Type errors after a model change | `bun run generate:types` |

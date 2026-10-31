@@ -40,17 +40,21 @@ export class CMSRequestError extends Error {
 }
 
 /**
- * Parse a CMS response as JSON. Redirects are not followed: a redirect from the CMS is almost
- * always Vercel Deployment Protection sending us to its login page, which would otherwise surface
- * as a JSON parse error.
+ * Parse a CMS response as JSON. Redirects are not followed: a redirect from the CMS is either
+ * Vercel Deployment Protection sending us to its login page or a domain redirect, meaning
+ * NEXT_PUBLIC_CMS_URL is not the CMS's own origin. Following them would hide the misconfiguration
+ * (and drop the auth header on a cross-origin hop).
  */
 const parseResponse = async <T>(res: Response, path: string): Promise<T> => {
   if (res.status >= 300 && res.status < 400) {
     const location = res.headers.get('location') ?? 'unknown'
-    throw new CMSRequestError(
-      `CMS request redirected to ${location} (${path}). If the CMS deployment is protected, set CMS_PROTECTION_BYPASS.`,
-      { status: res.status, path },
-    )
+    const hint = /^https:\/\/vercel\.com\//.test(location)
+      ? 'The CMS deployment is protected; set CMS_PROTECTION_BYPASS.'
+      : 'Set NEXT_PUBLIC_CMS_URL to the origin the CMS redirects to.'
+    throw new CMSRequestError(`CMS request redirected to ${location} (${path}). ${hint}`, {
+      status: res.status,
+      path,
+    })
   }
 
   if (!res.ok) {

@@ -44,7 +44,8 @@ Useful website log lines:
 
 | Message | Meaning |
 |---|---|
-| `CMS request redirected to … If the CMS deployment is protected, set CMS_PROTECTION_BYPASS.` | The CMS is behind Deployment Protection |
+| `CMS request redirected to https://vercel.com/… The CMS deployment is protected; set CMS_PROTECTION_BYPASS.` | The CMS is behind Deployment Protection |
+| `CMS request redirected to <other origin>… Set NEXT_PUBLIC_CMS_URL to the origin the CMS redirects to.` | `NEXT_PUBLIC_CMS_URL` points at a domain that redirects (for example a Vercel domain redirect) |
 | `CMS unreachable (…)` / `CMS request failed with <status> (…)` | The CMS is down or returned an error |
 | `[revalidate] failed to re-render [...]` | Some paths could not be re-rendered; they refresh within 600 s |
 | `[cms] failed to verify the admin session` | `/next/preview` could not reach `/api/users/me` |
