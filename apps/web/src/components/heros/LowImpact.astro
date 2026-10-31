@@ -1,0 +1,23 @@
+---
+import type { Page } from '@zeus/core/payload-types'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+
+import RichText from '@/components/RichText.astro'
+
+type Props = Page['hero']
+
+const { richText } = Astro.props
+---
+
+<div class="container mt-16">
+  <div class="max-w-[48rem]">
+    {richText && (
+      <RichText
+        class="prose-headings:heading-display"
+        data={richText as unknown as SerializedEditorState}
+        enableGutter={false}
+      />
+    )}
+    <slot />
+  </div>
+</div>

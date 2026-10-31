@@ -9,8 +9,8 @@ type Args = {
 }
 
 /**
- * The website runs as a separate Next.js deployment, so `revalidatePath` / `revalidateTag`
- * called from the CMS would only clear the CMS's own cache. Ask the website to do it instead.
+ * The website (apps/web, Astro) is a separate deployment whose pages Vercel caches with ISR.
+ * Ask it to re-render the changed paths; it maps the tags to the paths that show that data.
  * Failures are logged and never block saving the document.
  */
 export const revalidateFrontend = async ({ paths = [], tags = [], payload }: Args) => {

@@ -1,0 +1,119 @@
+---
+import '@fontsource/geist-sans/400.css'
+import '@fontsource/geist-sans/600.css'
+import '@fontsource/geist-sans/700.css'
+import '@fontsource/geist-mono/400.css'
+import '@/styles/global.css'
+
+import Footer from '@/components/Footer.astro'
+import Header from '@/components/Header.astro'
+import { isDraft } from '@/lib/draft'
+import { SITE_NAME, type PageMeta } from '@/lib/seo'
+import { getCMSURL, getServerSideURL } from '@/lib/env'
+import SpeedInsights from '@vercel/speed-insights/astro'
+
+type Props = {
+  meta?: PageMeta
+}
+
+const { meta } = Astro.props
+
+const title = meta?.title ?? SITE_NAME
+const description = meta?.description
+const ogImage = meta?.ogImage ?? `${getServerSideURL()}/website-template-OG.webp`
+const url = meta?.url ?? `${getServerSideURL()}${Astro.url.pathname}`
+
+const draft = isDraft(Astro.cookies)
+if (draft) {
+  // Keep draft renders out of any shared cache
+  Astro.response.headers.set('Cache-Control', 'private, no-store')
+}
+const cmsURL = draft ? getCMSURL() : undefined
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={url} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link href="/favicon.ico" rel="icon" sizes="32x32" />
+    <link href="/favicon.svg" rel="icon" type="image/svg+xml" />
+    <SpeedInsights />
+    <slot name="head" />
+    <script is:inline>
+      ;(function () {
+        function getImplicitPreference() {
+          var mql = window.matchMedia('(prefers-color-scheme: dark)')
+          if (typeof mql.matches === 'boolean') return mql.matches ? 'dark' : 'light'
+          return null
+        }
+
+        function themeIsValid(theme) {
+          return theme === 'light' || theme === 'dark'
+        }
+
+        var themeToSet = 'light'
+        var preference = window.localStorage.getItem('payload-theme')
+
+        if (themeIsValid(preference)) {
+          themeToSet = preference
+        } else {
+          var implicitPreference = getImplicitPreference()
+          if (implicitPreference) themeToSet = implicitPreference
+        }
+
+        document.documentElement.setAttribute('data-theme', themeToSet)
+      })()
+    </script>
+  </head>
+  <body>
+    {
+      draft && (
+        <div class="relative z-30 flex items-center justify-center gap-3 bg-warning px-4 py-2 text-sm font-medium text-warning-content">
+          Draft preview
+          <a class="underline" href={`/next/exit-preview?path=${encodeURIComponent(Astro.url.pathname)}`}>
+            Exit
+          </a>
+        </div>
+      )
+    }
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    {
+      draft && (
+        <script is:inline define:vars={{ cmsURL }}>
+          // Live preview in the CMS admin: announce readiness, then reload whenever the document is saved
+          // (the protocol of @payloadcms/live-preview's RefreshRouteOnSave)
+          ;(function () {
+            var target = window.opener || window.parent
+            if (target && target !== window) {
+              target.postMessage({ type: 'payload-live-preview', ready: true }, cmsURL)
+            }
+            window.addEventListener('message', function (event) {
+              if (
+                event.origin === cmsURL &&
+                event.data &&
+                typeof event.data === 'object' &&
+                event.data.type === 'payload-document-event'
+              ) {
+                window.location.reload()
+              }
+            })
+          })()
+        </script>
+      )
+    }
+  </body>
+</html>

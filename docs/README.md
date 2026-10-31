@@ -1,10 +1,10 @@
 # Zeus documentation
 
-Zeus is the content platform behind **ausor.ai**. It is a Bun workspace with two Next.js apps that share one Payload CMS configuration and one PostgreSQL database:
+Zeus is the content platform behind **ausor.ai**. It is a Bun workspace with two apps:
 
-- `apps/cms` → **cms.ausor.ai**: Payload admin panel, REST/GraphQL API, media, scheduled jobs
-- `apps/web` → **ausor.ai**: the public website
-- `packages/core`: shared Payload config, collections, blocks, components and utilities
+- `apps/cms` → **cms.ausor.ai**: Payload CMS on Next.js. Admin panel, REST/GraphQL API, media, scheduled jobs; owns the PostgreSQL database
+- `apps/web` → **ausor.ai**: the public website, built with Astro; reads content from the CMS REST API
+- `packages/core`: Payload config, collections, block schemas, admin components, migrations and the generated types
 
 ## Documents
 

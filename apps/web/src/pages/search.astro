@@ -1,0 +1,49 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import CollectionArchive from '@/components/CollectionArchive.astro'
+import type { CardPostData } from '@/components/Card.astro'
+import { searchPosts } from '@/lib/cms'
+import { SITE_NAME } from '@/lib/seo'
+import { getServerSideURL } from '@/lib/env'
+
+const query = Astro.url.searchParams.get('q') ?? ''
+const results = await searchPosts(query)
+
+const meta = {
+  title: `Search | ${SITE_NAME}`,
+  description: undefined,
+  ogImage: `${getServerSideURL()}/website-template-OG.webp`,
+  url: `${getServerSideURL()}/search`,
+}
+---
+
+<Layout meta={meta}>
+  <div class="pt-16 pb-24">
+    <div class="container mb-16 text-center">
+      <h1 class="heading-display mb-8 text-4xl md:text-5xl">Search</h1>
+
+      <div class="mx-auto max-w-[36rem]">
+        <form action="/search" method="get" class="join w-full">
+          <label for="search" class="sr-only">Search</label>
+          <input
+            id="search"
+            name="q"
+            type="search"
+            value={query}
+            placeholder="Search posts…"
+            class="input join-item w-full"
+          />
+          <button type="submit" class="btn btn-primary join-item font-medium"> Search </button>
+        </form>
+      </div>
+    </div>
+
+    {
+      results.docs.length > 0 ? (
+        <CollectionArchive posts={results.docs as CardPostData[]} />
+      ) : (
+        <div class="container text-center text-base-content/60">No results found.</div>
+      )
+    }
+  </div>
+</Layout>

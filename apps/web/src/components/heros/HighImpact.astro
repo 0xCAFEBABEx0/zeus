@@ -1,0 +1,51 @@
+---
+import type { Page } from '@zeus/core/payload-types'
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
+
+import CMSLink from '@/components/CMSLink.astro'
+import Media from '@/components/Media.astro'
+import RichText from '@/components/RichText.astro'
+
+type Props = Page['hero']
+
+const { links, media, richText } = Astro.props
+const hasMedia = media && typeof media === 'object'
+---
+
+<div class="relative isolate -mt-16 overflow-hidden text-white" data-theme="dark">
+  {
+    hasMedia && (
+      <div class="absolute inset-0 -z-10 select-none">
+        <Media fill imgClass="object-cover" loading="eager" resource={media} />
+        <div class="absolute inset-0 bg-gradient-to-b from-base-100/70 via-base-100/40 to-base-100" />
+      </div>
+    )
+  }
+  <div
+    class:list={[
+      'container relative z-10 flex min-h-[70vh] flex-col items-center justify-center py-24 text-center',
+      !hasMedia && 'bg-base-100',
+    ]}
+  >
+    <div class="max-w-[44rem]">
+      {richText && (
+        <RichText
+          class="mb-8 prose-headings:heading-display prose-h1:text-5xl md:prose-h1:text-6xl"
+          data={richText as unknown as SerializedEditorState}
+          enableGutter={false}
+        />
+      )}
+      {
+        Array.isArray(links) && links.length > 0 && (
+          <ul class="flex flex-wrap justify-center gap-3">
+            {links.map(({ link }) => (
+              <li>
+                <CMSLink {...link} />
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</div>

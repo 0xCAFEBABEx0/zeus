@@ -25,7 +25,7 @@ cp .env.example apps/web/.env
 #   ln -s ../../.env apps/cms/.env && ln -s ../../.env apps/web/.env
 ```
 
-Fill in at least `POSTGRES_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SERVER_URL=http://localhost:3000`, `NEXT_PUBLIC_CMS_URL=http://localhost:3001`, `REVALIDATION_SECRET` and `PREVIEW_SECRET`. Leave `COOKIE_DOMAIN` empty. See [CONFIGURATION.md](./CONFIGURATION.md).
+Fill in at least `POSTGRES_URL`, `PAYLOAD_SECRET`, `NEXT_PUBLIC_SERVER_URL=http://localhost:3000`, `NEXT_PUBLIC_CMS_URL=http://localhost:3001`, `REVALIDATION_SECRET` and `PREVIEW_SECRET`. Leave `COOKIE_DOMAIN` and `CMS_PROTECTION_BYPASS` empty. The website only uses the URLs and the two shared secrets; the database and Payload variables are for the CMS. See [CONFIGURATION.md](./CONFIGURATION.md).
 
 Without `BLOB_READ_WRITE_TOKEN`, uploads are stored on disk under `packages/core/public/media`.
 
@@ -62,7 +62,7 @@ Ports 3000 and 3001 are forwarded.
 
 ```bash
 bun run dev        # both apps
-bun run dev:web    # website only, http://localhost:3000
+bun run dev:web    # website only (Astro), http://localhost:3000; needs the CMS running
 bun run dev:cms    # CMS only, http://localhost:3001
 ```
 
@@ -71,9 +71,8 @@ bun run dev:cms    # CMS only, http://localhost:3001
 | http://localhost:3000 | Website |
 | http://localhost:3001/admin | CMS admin (create the first user on first visit) |
 | http://localhost:3001/api/graphql-playground | GraphQL playground |
-| http://localhost:3000/sentry-test | Sentry test page |
 
-Cookies on `localhost` are shared across ports, so the admin bar and draft preview work locally without `COOKIE_DOMAIN`.
+Cookies on `localhost` are shared across ports, so draft preview works locally without `COOKIE_DOMAIN`. There is no ISR cache in `astro dev`: every request renders with the latest published content, so revalidation has no visible effect locally.
 
 ### Demo content
 
@@ -85,10 +84,10 @@ Run from the repository root.
 
 | Script | What it does |
 |---|---|
-| `bun run dev`, `dev:cms`, `dev:web` | Start Next.js dev servers (Turbopack) |
+| `bun run dev`, `dev:cms`, `dev:web` | Start the dev servers (Next.js with Turbopack for the CMS, `astro dev` for the website) |
 | `bun run build`, `build:cms`, `build:web` | Production builds (`build` builds both) |
 | `bun run lint`, `lint:fix` | ESLint for the whole repository |
-| `bun run typecheck` | `tsc --noEmit` in both apps (includes `packages/core`) |
+| `bun run typecheck` | `tsc --noEmit` in the CMS (includes `packages/core`) and `astro check` in the website |
 | `bun run generate:types` | Regenerate `packages/core/src/payload-types.ts` |
 | `bun run generate:importmap` | Regenerate the admin import map in `apps/cms` |
 | `bun run payload <command>` | Payload CLI in `apps/cms`, e.g. `migrate`, `migrate:status`, `migrate:create` |
@@ -119,17 +118,17 @@ bun run generate:types
 bun run typecheck
 ```
 
-This is what CI runs. Run `bun run build` too when you touched `next.config`, routes or anything used during static generation.
+This is what CI runs. Run `bun run build` too when you touched `next.config`, `astro.config.mjs` or the routes.
 
 ## Coding conventions
 
 - TypeScript everywhere, strict mode with `noUncheckedIndexedAccess` (`tsconfig.base.json`).
 - Prettier: single quotes, no semicolons, trailing commas, 100-character lines (`.prettierrc.json`). EditorConfig: 2-space indentation, LF.
-- ESLint: `eslint-config-next` (core web vitals + TypeScript). Unused variables are allowed only with a leading `_`.
-- Import shared code with `@/…` and the Payload config with `@payload-config`. Do not import between `apps/cms` and `apps/web`.
-- Build absolute URLs with `getServerSideURL()` / `getCMSURL()` and media URLs with `getMediaUrl()`; never hard-code domains.
+- ESLint: `eslint-config-next` (core web vitals + TypeScript) for the TypeScript files; `.astro` files are checked by `astro check`, not ESLint. Unused variables are allowed only with a leading `_`.
+- In the CMS and `packages/core`, import shared code with `@/…` and the Payload config with `@payload-config`. In the website, `@/…` means `apps/web/src/…` and `@zeus/core/…` reaches `packages/core/src/…`; import only types and plain data from it, never Payload or React code. Do not import between `apps/cms` and `apps/web`.
+- Build absolute URLs with `getServerSideURL()` / `getCMSURL()` and media URLs with `getMediaUrl()`; never hard-code domains. On the website, read environment variables with `env()` from `src/lib/env.ts` and content only through the functions in `src/lib/cms.ts`.
 - From CMS-side code, invalidate website caches with `revalidateFrontend()`, never with `revalidatePath`/`revalidateTag` directly.
-- Components: PascalCase directories with `index.tsx` (or `Component.tsx` for blocks); utilities: camelCase files.
+- Components: PascalCase directories with `index.tsx` in `packages/core` (admin components); PascalCase `.astro` files in `apps/web/src/components`; utilities: camelCase files.
 - Keep comments short and explain why, not what.
 
 ## Troubleshooting
@@ -137,11 +136,14 @@ This is what CI runs. Run `bun run build` too when you touched `next.config`, ro
 | Symptom | Fix |
 |---|---|
 | `CRITICAL: POSTGRES_URL environment variable is not set.` | The app's own `.env` is missing or lacks `POSTGRES_URL` |
-| Admin login works but the website shows no admin bar / preview returns 403 | Both apps must use the same `PAYLOAD_SECRET`; in deployed environments `COOKIE_DOMAIN` must cover both domains |
+| Admin login works but preview returns 403 | The website did not receive the `payload-token` cookie or the CMS rejected it; in deployed environments `COOKIE_DOMAIN` must cover both domains |
 | Preview returns 403 "You are not allowed" right away | `PREVIEW_SECRET` differs between the apps |
 | Edits do not show up on the website | Check the CMS log for `Website revalidation failed`; `REVALIDATION_SECRET` must match and `NEXT_PUBLIC_SERVER_URL` must reach the website |
-| Images fail to load with a `next/image` host error | `NEXT_PUBLIC_CMS_URL` must match the CMS origin; restart after changing it |
+| Website pages fail with `CMS unreachable` or `CMS request failed` | Start the CMS and check `NEXT_PUBLIC_CMS_URL` in `apps/web/.env` |
+| `CMS request redirected to https://vercel.com/...` on a Preview deployment | The CMS preview is behind Deployment Protection; set `CMS_PROTECTION_BYPASS` on the web project |
+| `CMS request redirected to` another host | `NEXT_PUBLIC_CMS_URL` is not the CMS's own origin (for example a domain that Vercel redirects); set it to the origin in the message |
+| Images fail to load | `NEXT_PUBLIC_CMS_URL` must match the CMS origin that serves `/api/media/file/*` |
 | Admin shows "component not found" | `bun run generate:importmap` |
 | Type errors after a model change | `bun run generate:types` |
 | Port already in use | `lsof -ti:3000 \| xargs kill` (or 3001) |
-| Odd behaviour after dependency changes | Delete `apps/*/.next` and restart; as a last resort `bun run reinstall` |
+| Odd behaviour after dependency changes | Delete `apps/cms/.next`, `apps/web/.astro` and `apps/web/dist`, then restart; as a last resort `bun run reinstall` |

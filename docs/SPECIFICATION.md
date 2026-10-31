@@ -51,22 +51,21 @@ Out of scope (not implemented): public user accounts or sign-up, comments, e-com
 ### SEO
 
 - **WEB-12** Each page and post has a `<title>` of the form `{SEO title} | Payload Website Template`, a meta description and Open Graph tags. The OG image is the SEO image's `og` size (1200×630), falling back to `/website-template-OG.webp`.
-- **WEB-13** The site publishes `/sitemap.xml` and `/robots.txt` (generated at build time by `next-sitemap`), plus dynamic `/pages-sitemap.xml` and `/posts-sitemap.xml`. `robots.txt` disallows `/admin/*`.
+- **WEB-13** The site publishes `/robots.txt`, a sitemap index at `/sitemap.xml`, and `/pages-sitemap.xml` and `/posts-sitemap.xml` built from the published content. `robots.txt` disallows `/admin/` and `/api/`.
 
 ### Presentation
 
-- **WEB-14** The site supports light and dark themes with a theme selector; the initial theme follows the stored preference or the operating system.
-- **WEB-15** Images are served through `next/image` from the CMS media URLs, in responsive sizes.
+- **WEB-14** The site supports light and dark themes with a theme selector (Auto, Light, Dark); the initial theme follows the stored preference or the operating system. The visual design (Tailwind CSS with daisyUI, Geist font) follows the `athena` project.
+- **WEB-15** Images are loaded directly from the CMS media URLs, with a `srcset` built from the generated sizes and lazy loading below the fold.
 
 ### Editor features on the website
 
-- **WEB-16** When an editor who is signed in to the CMS visits the website, an admin bar is shown with links to edit the current document and to exit preview. (In production this needs the shared cookie domain, see [CONFIGURATION.md](./CONFIGURATION.md).)
-- **WEB-17** Draft preview: the CMS "Preview" button and live preview open the website in Next.js draft mode, which shows the latest draft instead of the published version. Only signed-in editors who also present the preview secret can enter draft mode. With live preview, the page refreshes automatically as the editor types (autosave).
+- **WEB-16** Draft preview: the CMS "Preview" button and live preview open the website in draft mode, which shows the latest draft instead of the published version, with a "Draft preview" banner and an exit link. Only signed-in editors who also present the preview secret can enter draft mode. (In production this needs the shared cookie domain, see [CONFIGURATION.md](./CONFIGURATION.md).)
+- **WEB-17** With live preview, the page reloads automatically each time the document is saved (autosave runs while the editor types).
 
-### Diagnostic pages
+### Diagnostics
 
-- **WEB-18** `/sentry-test` (website) and `/api/sentry-test` (CMS) trigger test errors, spans and logs for Sentry. They return 404 in the production environment.
-- **WEB-19** `/vercel-insights-test` shows whether Vercel Analytics and Speed Insights are loaded. It is available in every environment.
+- **WEB-18** `/api/sentry-test` on the CMS triggers a test error and log for Sentry; it returns 404 in the production environment. The website has no diagnostic pages.
 
 ## Functional requirements: CMS (cms.ausor.ai)
 
@@ -88,10 +87,10 @@ Out of scope (not implemented): public user accounts or sign-up, comments, e-com
 
 | Area | Requirement | How it is met |
 |---|---|---|
-| Performance | Public pages are served from cache | Static generation at build time, `unstable_cache` with tags, on-demand revalidation from the CMS, 10-minute ISR for post listings |
+| Performance | Public pages are served from cache and ship little JavaScript | Astro server rendering cached by Vercel ISR, on-demand revalidation from the CMS, 10-minute expiration as a safety net; no client framework, only small inline scripts |
 | Availability | Website and CMS fail independently | Two Vercel projects; a CMS outage does not take the cached website down |
 | Security | Draft content and user data are not public | Access rules (`authenticatedOrPublished`, `authenticated`), preview secret + session check, secrets for revalidation and cron, CORS limited to the site and CMS origins |
 | Privacy | Author e-mails are not exposed | Authors are copied into `populatedAuthors` with id and name only |
 | Observability | Errors and performance are tracked per app | Sentry (events tagged `app: cms` / `app: web`), Vercel Analytics and Speed Insights on the website |
-| Maintainability | One source of truth for the content model | Both apps import the same Payload config from `packages/core` |
+| Maintainability | One source of truth for the content model | The CMS uses the Payload config in `packages/core`; the website uses the types generated from it |
 | Runtime | Supported versions are pinned | Node.js 26.13.0 (`.nvmrc`, `engines`), Bun 1.4.4 |

@@ -1,4 +1,5 @@
 {
+  "framework": "astro",
   "buildCommand": "bun run build",
   "build": {
     "env": {
@@ -11,8 +12,5 @@
       "preview": true,
       "development": false
     }
-  },
-  "env": {
-    "NODE_ENV": "production"
   }
 }

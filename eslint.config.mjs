@@ -35,10 +35,19 @@ const eslintConfig = defineConfig([
   },
   {
     settings: {
-      next: { rootDir: ['apps/cms/', 'apps/web/'] },
+      next: { rootDir: ['apps/cms/'] },
     },
   },
-  globalIgnores(['**/.next/', '**/out/', '**/build/', '**/next-env.d.ts']),
+  globalIgnores([
+    '**/.next/',
+    '**/out/',
+    '**/build/',
+    '**/next-env.d.ts',
+    // Astro build output and generated types (apps/web)
+    '**/dist/',
+    '**/.vercel/',
+    '**/.astro/',
+  ]),
 ])
 
 export default eslintConfig

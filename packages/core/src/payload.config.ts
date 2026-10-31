@@ -81,7 +81,7 @@ export default buildConfig({
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
   collections: [Pages, Posts, Media, Categories, Users],
-  // The website (ausor.ai) calls the CMS API from the browser: form submissions and the admin bar
+  // The website (ausor.ai) calls the CMS API from the browser for form submissions
   cors: [getServerSideURL(), getCMSURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins: [
