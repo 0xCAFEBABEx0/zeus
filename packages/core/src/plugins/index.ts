@@ -35,7 +35,7 @@ export const plugins: Plugin[] = [
             return {
               ...field,
               admin: {
-                description: 'You will need to rebuild the website when changing this field.',
+                description: 'Path to redirect from, e.g. /old-page. The website applies changes within a minute.',
               },
             }
           }

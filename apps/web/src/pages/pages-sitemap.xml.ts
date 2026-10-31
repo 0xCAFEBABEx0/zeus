@@ -4,18 +4,20 @@ import { getAllSlugs } from '@/lib/cms'
 import { getServerSideURL } from '@/lib/env'
 import { sitemapResponse, sitemapXML, type SitemapEntry } from '@/lib/sitemap'
 
-export const GET: APIRoute = async ({ url }) => {
-  const base = url.origin || getServerSideURL()
+export const GET: APIRoute = async () => {
+  const base = getServerSideURL()
   const now = new Date().toISOString()
 
   try {
     const docs = await getAllSlugs('pages')
 
     const entries: SitemapEntry[] = [
-      ...docs.map((doc) => ({
-        loc: doc.slug === 'home' ? `${base}/` : `${base}/${doc.slug}`,
-        lastmod: doc.updatedAt,
-      })),
+      ...docs
+        .filter((doc) => Boolean(doc.slug))
+        .map((doc) => ({
+          loc: doc.slug === 'home' ? `${base}/` : `${base}/${doc.slug}`,
+          lastmod: doc.updatedAt,
+        })),
       { loc: `${base}/search`, lastmod: now },
       { loc: `${base}/posts`, lastmod: now },
     ]

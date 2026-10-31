@@ -4,8 +4,8 @@ import { getAllSlugs } from '@/lib/cms'
 import { getServerSideURL } from '@/lib/env'
 import { sitemapResponse, sitemapXML } from '@/lib/sitemap'
 
-export const GET: APIRoute = async ({ url }) => {
-  const base = url.origin || getServerSideURL()
+export const GET: APIRoute = async () => {
+  const base = getServerSideURL()
 
   try {
     const docs = await getAllSlugs('posts')

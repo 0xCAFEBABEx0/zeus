@@ -7,10 +7,10 @@ This document explains how the code is organised and why, so that changes land i
 | Workspace | Package name | Role | Depends on |
 |---|---|---|---|
 | `apps/cms` | `@zeus/cms` | Thin Next.js shell around Payload's admin and API routes | `@zeus/core` |
-| `apps/web` | `@zeus/web` | Public website routes, Tailwind setup, sitemap config, static assets | `@zeus/core` |
-| `packages/core` | `@zeus/core` | Everything shared: Payload config, content model, React components, utilities, migrations | Payload, Next.js and React as peers |
+| `apps/web` | `@zeus/web` | Public website: Astro routes, components, CMS REST client, Tailwind/daisyUI styles, static assets | `@zeus/core` (types only) |
+| `packages/core` | `@zeus/core` | Payload config, content model, admin components, utilities, migrations, generated types | Payload, Next.js and React as peers |
 
-`packages/core` is not built on its own. Each app compiles its sources directly through the `@/*` and `@payload-config` path aliases (see each app's `tsconfig.json`) and `createNextConfig()` sets `outputFileTracingRoot` and `turbopack.root` to the repository root so files outside the app directory are traced and compiled.
+`packages/core` is not built on its own. The CMS compiles its sources directly through the `@/*` and `@payload-config` path aliases (see `apps/cms/tsconfig.json`), and `createNextConfig()` sets `outputFileTracingRoot` and `turbopack.root` to the repository root so files outside the app directory are traced and compiled. The website resolves `@zeus/core/*` to `packages/core/src/*` (in `tsconfig.json` and the Vite alias in `astro.config.mjs`) and only imports `payload-types.ts`, `endpoints/seed/home-static.ts` and `utilities/env.ts` from it.
 
 ### `packages/core/src` modules
 
@@ -18,63 +18,70 @@ This document explains how the code is organised and why, so that changes land i
 |---|---|
 | `payload.config.ts` | Single Payload configuration: database adapter, collections, globals, plugins, CORS, jobs, admin options |
 | `collections/` | `Pages`, `Posts`, `Media`, `Categories`, `Users`, with their hooks |
-| `Header/`, `Footer/` | Global configs (`config.ts`), revalidation hooks, row labels and the React components that render them |
-| `blocks/` | Each block has `config.ts` (Payload schema) and `Component.tsx` (rendering). `RenderBlocks.tsx` maps `blockType` → component |
-| `heros/` | Hero field (`config.ts`) and the three hero variants, chosen by `RenderHero.tsx` |
+| `Header/`, `Footer/` | Global configs (`config.ts`), revalidation hooks and admin row labels |
+| `blocks/` | Payload schema of each block (`config.ts`). The website renders them in `apps/web/src/components/blocks/` |
+| `heros/` | Hero field (`config.ts`). The website renders the variants in `apps/web/src/components/heros/` |
 | `fields/` | Reusable field builders: `link`, `linkGroup`, `slug` (with its admin component), `defaultLexical` editor |
 | `plugins/index.ts` | Configuration of the redirects, nested-docs, SEO, form-builder, search and Payload Cloud plugins |
-| `search/` | Search plugin overrides (extra fields, `beforeSync`) and the search input component |
+| `search/` | Search plugin overrides (extra fields, `beforeSync`) |
 | `access/` | Access functions: `anyone`, `authenticated`, `authenticatedOrPublished` |
 | `hooks/` | Cross-collection hooks: `populatePublishedAt`, `revalidateRedirects`, `formatSlug` |
-| `components/` | Shared React components (Card, CollectionArchive, Media, RichText, Link, AdminBar, LivePreviewListener, PayloadRedirects, admin dashboard widgets, `ui/` primitives) |
-| `providers/` | Theme and header-theme React contexts |
-| `utilities/` | URL helpers, cached data loaders, metadata, revalidation client, environment helpers |
+| `components/` | Admin components only (BeforeLogin, BeforeDashboard with the seed button, EnvironmentIndicator) |
+| `utilities/` | URL helpers, preview path, revalidation client, environment helpers |
 | `endpoints/seed/` | Demo content and the `seed()` function used by the CMS seed route |
 | `migrations/` | Payload migrations and their schema snapshots |
 | `payload-types.ts` | Generated TypeScript types; regenerate with `bun run generate:types`, never edit by hand |
 
+### `apps/web/src` modules
+
+| Path | Responsibility |
+|---|---|
+| `pages/` | Routes: `[...slug].astro` (pages, `home` at `/`), `posts/`, `search.astro`, sitemaps, `robots.txt`, `404`/`500`, `next/preview`, `next/exit-preview`, `api/revalidate` |
+| `layouts/Layout.astro` | `<head>` metadata, theme bootstrap script, draft banner, live preview listener, header and footer |
+| `components/` | Header, Footer, theme selector, Card, archive, pagination, `RichText`, `Media`, `CMSLink`, `blocks/` and `heros/` |
+| `lib/cms.ts` | REST client: one function per query, explicit `depth`/`limit`, no redirects followed, draft reads with the editor's token |
+| `lib/draft.ts` | Draft mode cookie (`__prerender_bypass`) and CMS fetch options for the current request |
+| `lib/richtext.ts` | Lexical → HTML with converters for the Banner, Code, Media and Call to Action blocks and internal links |
+| `lib/env.ts`, `lib/isr.mjs` | Environment access, site/CMS URLs, ISR bypass token derived from `REVALIDATION_SECRET` |
+| `lib/media.ts`, `lib/links.ts`, `lib/seo.ts`, `lib/sitemap.ts`, `lib/format.ts` | Media URLs and `srcset`, link fields, head metadata, sitemap XML, dates and authors |
+| `middleware.ts` | `/admin*` → CMS, and the Redirects collection (307) |
+| `styles/global.css` | Tailwind v4 + typography + daisyUI with the light and dark themes |
+
 ### What goes where
 
-- A route that visitors reach → `apps/web/src/app/(frontend)/`.
+- A route that visitors reach → `apps/web/src/pages/`.
 - A route that only the CMS should serve (admin tooling, webhooks into Payload) → `apps/cms/src/app/(payload)/`.
-- Anything used by the Payload config (collections, fields, hooks, admin components) or rendered on the website and referenced by content (blocks, heros) → `packages/core/src/`.
+- Anything used by the Payload config (collections, fields, hooks, admin components) → `packages/core/src/`.
+- How a block, hero or global looks on the website → `apps/web/src/components/`.
 - Files under `apps/cms/src/app/(payload)/admin/` and `layout.tsx` there are generated by Payload; regenerate the import map with `bun run generate:importmap` after adding admin components.
 
 ## URL helpers
 
-All absolute URLs go through two functions in `utilities/getURL.ts`:
+The CMS builds absolute URLs with two functions in `packages/core/src/utilities/getURL.ts`; the website has equivalents with the same names in `apps/web/src/lib/env.ts`:
 
 | Function | Returns | Fallbacks |
 |---|---|---|
 | `getServerSideURL()` | Website origin, used for links, SEO URLs, sitemaps, preview and revalidation | `NEXT_PUBLIC_SERVER_URL` → `https://$VERCEL_PROJECT_PRODUCTION_URL` → `http://localhost:3000` |
-| `getCMSURL()` | CMS origin, used for media, form submissions, the admin bar and live preview | `NEXT_PUBLIC_CMS_URL` → `http://localhost:3001` |
+| `getCMSURL()` | CMS origin, used for the REST API, media, form submissions and live preview | `NEXT_PUBLIC_CMS_URL` → `http://localhost:3001` (the website throws on Vercel instead) |
 
-The CMS must set `NEXT_PUBLIC_SERVER_URL` explicitly, because its own `VERCEL_PROJECT_PRODUCTION_URL` is the CMS domain. Production builds fail early when the CMS lacks `NEXT_PUBLIC_SERVER_URL` or the website lacks `NEXT_PUBLIC_CMS_URL` (`requiredEnv` in each `next.config.mjs`).
+The CMS must set `NEXT_PUBLIC_SERVER_URL` explicitly, because its own `VERCEL_PROJECT_PRODUCTION_URL` is the CMS domain. Production builds fail early when the CMS lacks `NEXT_PUBLIC_SERVER_URL` (`requiredEnv` in `apps/cms/next.config.mjs`) or the website lacks `NEXT_PUBLIC_CMS_URL` or `REVALIDATION_SECRET` (`apps/web/astro.config.mjs`).
 
-`getMediaUrl(url, cacheTag?)` turns a stored relative media path into an absolute CMS URL and leaves absolute URLs untouched.
+`getMediaUrl(url, cacheTag?)` (website) turns a stored relative media path into an absolute CMS URL and leaves absolute URLs untouched.
 
 ## Rendering and caching
 
 ### Route rendering
 
+Every route is rendered on demand by a Vercel Function (`output: 'server'`). Vercel ISR caches the responses:
+
 | Route | Strategy |
 |---|---|
-| `/`, `/[slug]` | Statically generated at build time for every published page (`generateStaticParams`); re-rendered on demand when revalidated; dynamic in draft mode |
-| `/posts/[slug]` | Same as pages |
-| `/posts`, `/posts/page/[n]` | Static with ISR every 600 s (`revalidate = 600`) |
-| `/search` | Dynamic (reads `searchParams`) |
-| `/pages-sitemap.xml`, `/posts-sitemap.xml` | Route handlers backed by `unstable_cache` |
+| `/`, `/[slug]`, `/posts/[slug]` | ISR; re-rendered on demand when revalidated; bypasses the cache in draft mode |
+| `/posts`, `/posts/page/[n]` | ISR; re-rendered when a post is published or deleted (`/posts`) or after 600 s |
+| `/pages-sitemap.xml`, `/posts-sitemap.xml`, `/sitemap.xml`, `/robots.txt` | ISR; the two sitemaps are re-rendered with their tags; a CMS outage returns 503 with `no-store` |
+| `/search`, `/next/*`, `/api/*` | Not cached (they read the query string or cookies) |
 
-### Data caches and tags
-
-Shared lookups are wrapped in `unstable_cache` with tags so that the CMS can invalidate them precisely:
-
-| Loader | Cache tag |
-|---|---|
-| `getCachedGlobal('header')` / `('footer')` | `global_header` / `global_footer` |
-| `getCachedRedirects()` | `redirects` |
-| `getCachedDocument(collection, slug)` | `{collection}_{slug}` |
-| pages sitemap / posts sitemap | `pages-sitemap` / `posts-sitemap` |
+ISR caches by path and ignores the query string, which is why `/search` is excluded. `expiration: 600` in `astro.config.mjs` is a safety net for what on-demand revalidation cannot reach.
 
 ### On-demand revalidation
 
@@ -89,30 +96,32 @@ Payload hooks decide what to invalidate and `revalidateFrontend()` sends it to t
 | Header / Footer changed | — | `global_header` / `global_footer` |
 | Redirect changed (`revalidateRedirects`) | — | `redirects` |
 
+`apps/web/src/pages/api/revalidate.ts` adds the paths for each tag (see [ARCHITECTURE.md](./ARCHITECTURE.md#editor-publishes-a-change)) and requests every path with `x-prerender-revalidate: <bypass token>`, six at a time. On Preview deployments it also sends `VERCEL_AUTOMATION_BYPASS_SECRET` when Vercel provides it.
+
 Rules:
 
 - Any write can opt out with `context: { disableRevalidate: true }` (the seed script does this).
 - `revalidateFrontend()` skips the call (with a warning) when `REVALIDATION_SECRET` is unset, times out after 10 s and only logs failures. Content is saved even when the website cannot be reached.
-- The post listings are not revalidated on demand; they refresh through ISR within 10 minutes. Changes to media or categories alone do not trigger revalidation. See [KNOWN_ISSUES.md](./KNOWN_ISSUES.md).
+- Pages with an Archive block, `/posts/page/N`, and changes to media or categories alone are not revalidated on demand; they refresh within 600 s. See [KNOWN_ISSUES.md](./KNOWN_ISSUES.md).
 
 ## Draft preview and live preview
 
 1. `generatePreviewPath()` builds `${getServerSideURL()}/next/preview?slug&collection&path&previewSecret`. Pages and posts use it for both `admin.preview` and `admin.livePreview.url`.
-2. `apps/web/.../next/preview/route.ts` rejects a wrong `previewSecret` (403), requires `path`, `collection` and `slug`, accepts only relative paths, then authenticates the request with `payload.auth()` using the `payload-token` cookie. Without a user it disables draft mode and returns 403.
-3. With a user it enables Next.js draft mode and redirects to the path. Page and post queries then run with `draft: true` and `overrideAccess: true`.
-4. In draft mode the page renders `LivePreviewListener`, which listens to the CMS (origin `getCMSURL()`) and calls `router.refresh()` on every autosave.
-5. `/next/exit-preview` disables draft mode; the admin bar calls it from "Exit preview".
+2. `apps/web/src/pages/next/preview.ts` rejects a wrong `previewSecret` (403), requires `path`, `collection` and `slug`, accepts only relative paths, then checks the `payload-token` cookie against the CMS (`GET /api/users/me` with `Authorization: JWT <token>`). Without a user it clears draft mode and returns 403.
+3. With a user it sets the `__prerender_bypass` cookie to the ISR bypass token and redirects to the path. Vercel skips the ISR cache for requests that carry it, and pages read the newest draft (`draft=true`) with the editor's token.
+4. In draft mode the layout shows a "Draft preview" banner, sends `Cache-Control: private, no-store`, and runs a small script that tells the admin's live preview it is ready and reloads the page on every `payload-document-event` from the CMS origin.
+5. `/next/exit-preview` clears the cookie and returns to the page.
 
-Because the session cookie is issued by the CMS, the website can only read it when both share a parent domain (`COOKIE_DOMAIN=.ausor.ai`) or both run on `localhost`.
+Because the session cookie is issued by the CMS, the website only receives it when both share a parent domain (`COOKIE_DOMAIN=.ausor.ai`) or both run on `localhost`.
 
 ## Website UI composition
 
-- `apps/web/src/app/layout.tsx` is the root layout: theme bootstrap (`InitTheme`), providers, `AdminBar`, `Header`, page content, `Footer`, Vercel Analytics and Speed Insights.
+- `Layout.astro` renders `<head>` (title, description, Open Graph, favicons, Speed Insights), the theme bootstrap script (`payload-theme` in localStorage, `data-theme` on `<html>`), `Header`, the page in `<main>`, and `Footer`. Vercel Web Analytics is injected by the adapter.
 - A page renders `RenderHero` then `RenderBlocks`. A post renders `PostHero`, `RichText` and `RelatedPosts`.
-- `RichText` converts Lexical JSON to JSX and supports the inline blocks Banner, Code, Media and Call to Action, plus internal links to pages and posts.
-- `PayloadRedirects` is rendered by pages and posts: with `disableNotFound` it only applies a matching redirect; otherwise it redirects or calls `notFound()`.
-- Page-level client components (`page.client.tsx`) set the header theme (for example dark over hero images).
-- Styling uses Tailwind with CSS variables defined in `globals.css`; `components/ui/` holds shadcn-style primitives built on Radix.
+- `RichText` converts Lexical JSON to HTML on the server and supports the inline blocks Banner, Code, Media and Call to Action, plus internal links to pages and posts.
+- `Header` and `Footer` catch CMS errors and render without navigation; `500.astro` does not call the CMS.
+- Forms (`FormBlock.astro`) render plain HTML fields; a small script posts them as JSON to `${NEXT_PUBLIC_CMS_URL}/api/form-submissions` and shows the confirmation message or follows the redirect.
+- Styling uses Tailwind CSS 4 with daisyUI 5 components and the light/dark themes in `styles/global.css`. The only client-side JavaScript is the theme script, the theme selector, the form script, live preview in draft mode and the Vercel/Sentry snippets.
 
 ## Security design
 
@@ -121,11 +130,11 @@ Because the session cookie is issued by the CMS, the website can only read it wh
 | Who can edit | `authenticated` access on every write; only `users` can sign in to the admin |
 | What visitors can read | `authenticatedOrPublished` on pages and posts (drafts hidden), `anyone` on media, categories and globals, `authenticated` on users |
 | Author privacy | Posts expose `populatedAuthors` (id, name) filled by an `afterRead` hook; the `users` collection itself stays private |
-| Cross-app calls | `/api/revalidate` requires `Bearer REVALIDATION_SECRET`; `/next/preview` requires `PREVIEW_SECRET` and a valid session |
+| Cross-app calls | `/api/revalidate` requires `Bearer REVALIDATION_SECRET`; `/next/preview` requires `PREVIEW_SECRET` and a valid CMS session. The draft cookie holds a hash of `REVALIDATION_SECRET`, never the secret itself |
 | Jobs endpoint | Signed-in users, or `Authorization: Bearer CRON_SECRET` |
 | CORS | Payload allows only the website and CMS origins |
 | Database TLS | SSL is required outside `NODE_ENV=development` (`rejectUnauthorized: false`) |
-| Diagnostics | `/sentry-test` and `/api/sentry-test` return 404 in production |
+| Diagnostics | The CMS's `/api/sentry-test` returns 404 in production |
 
 ## Extension recipes
 
@@ -134,14 +143,14 @@ Because the session cookie is issued by the CMS, the website can only read it wh
 1. Edit the collection in `packages/core/src/collections/`.
 2. Run `bun run generate:types`.
 3. Create a migration (see [DATA_MODEL.md](./DATA_MODEL.md#migrations)) and plan how it reaches the production database.
-4. Render the field on the website if needed.
+4. Render the field on the website if needed (the generated types are shared, so `astro check` shows where).
 
 ### Add a layout block
 
-1. Create `packages/core/src/blocks/<Name>/config.ts` (with `slug` and `interfaceName`) and `Component.tsx`.
+1. Create `packages/core/src/blocks/<Name>/config.ts` (with `slug` and `interfaceName`).
 2. Add the block to the `layout` field in `collections/Pages/index.ts` (or to `BlocksFeature` in `Posts` for rich text).
-3. Register the component in `blocks/RenderBlocks.tsx` (or in the converters in `components/RichText`).
-4. Run `bun run generate:types` and `bun run generate:importmap`, then create a migration.
+3. Run `bun run generate:types` and `bun run generate:importmap`, then create a migration.
+4. Create `apps/web/src/components/blocks/<Name>.astro` and add it to `RenderBlocks.astro` (or add an HTML converter in `apps/web/src/lib/richtext.ts` for rich text). Request a `depth` in `lib/cms.ts` that populates its relations.
 
 ### Add a collection
 
@@ -151,4 +160,4 @@ Because the session cookie is issued by the CMS, the website can only read it wh
 
 ### Add an environment variable
 
-Add it to `.env.example` with a comment, to [CONFIGURATION.md](./CONFIGURATION.md), to `environment.d.ts` if code reads it, and to both Vercel projects when both apps need it. Add it to `requiredEnv` in the app's `next.config.mjs` if a production build must not run without it.
+Add it to `.env.example` with a comment, to [CONFIGURATION.md](./CONFIGURATION.md), to `environment.d.ts` if CMS code reads it, and to both Vercel projects when both apps need it. On the website, read it with `env()` from `lib/env.ts`. If a production build must not run without it, add it to `requiredEnv` in `apps/cms/next.config.mjs` or to the check at the top of `apps/web/astro.config.mjs`.

@@ -1,12 +1,12 @@
 # Zeus
 
-Zeus is the content platform behind [ausor.ai](https://ausor.ai). It is built on [Payload CMS](https://payloadcms.com) and Next.js, started from the Payload website template.
+Zeus is the content platform behind [ausor.ai](https://ausor.ai). The CMS is built on [Payload CMS](https://payloadcms.com) and Next.js, started from the Payload website template; the public website is built with [Astro](https://astro.build) and reads content from the CMS REST API.
 
-The CMS and the website are separate Next.js apps in one Bun workspace, deployed as two Vercel projects:
+Both apps live in one Bun workspace and are deployed as two Vercel projects:
 
 - `apps/cms` → **cms.ausor.ai** (Payload admin, REST/GraphQL API, media, scheduled jobs)
-- `apps/web` → **ausor.ai** (public website)
-- `packages/core` → shared Payload config, collections, blocks and components
+- `apps/web` → **ausor.ai** (public website, Astro with Vercel ISR)
+- `packages/core` → Payload config, collections, block schemas and generated types
 
 ## Documentation
 
@@ -33,7 +33,7 @@ cp .env.example apps/cms/.env
 cp .env.example apps/web/.env
 # edit both files (see docs/CONFIGURATION.md)
 
-bun run dev
+bun run dev   # the website needs the CMS running
 ```
 
 - Website: http://localhost:3000

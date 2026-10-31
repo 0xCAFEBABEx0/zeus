@@ -113,7 +113,7 @@ Storage: Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set (the plugin adds the `_
 
 ### `redirects`
 
-`from` (text; changing it needs a website rebuild for statically generated pages, as noted in the admin), `to.type` (`reference` \| `custom`), `to.reference` (page or post), `to.url`. `afterChange` revalidates the `redirects` tag.
+`from` (text; the website applies a change within about a minute, see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) B10), `to.type` (`reference` \| `custom`), `to.reference` (page or post), `to.url`. `afterChange` revalidates the `redirects` tag.
 
 ### `forms` and `form-submissions`
 
