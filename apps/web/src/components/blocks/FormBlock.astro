@@ -122,7 +122,9 @@ const widthStyle = (width: number | null) =>
                   <select class="select w-full" id={f.name} name={f.name} required={f.required}>
                     <option value="">Select...</option>
                     {f.options.map((option) => (
-                      <option value={option.value}>{option.label}</option>
+                      <option value={option.value} selected={option.value === f.defaultValue}>
+                        {option.label}
+                      </option>
                     ))}
                   </select>
                 </div>

@@ -16,7 +16,7 @@ import type {
   MediaBlock,
 } from '@zeus/core/payload-types'
 
-import { imgAttrs } from './media'
+import { getMediaUrl, imgAttrs, isVideo } from './media'
 import { linkHref, type CMSLinkData } from './links'
 
 type CodeBlockFields = { code: string; language?: string; blockType: 'code' }
@@ -42,6 +42,11 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }): stri
 
 const mediaHTML = (media: MediaBlock['media']): string => {
   if (!media || typeof media !== 'object') return ''
+  if (isVideo(media)) {
+    const src = escapeHTML(getMediaUrl(media.url, media.updatedAt))
+    const type = media.mimeType ? ` type="${escapeHTML(media.mimeType)}"` : ''
+    return `<video class="m-0 w-full border border-base-300/60 rounded-box" autoplay loop muted playsinline preload="metadata"><source src="${src}"${type} /></video>`
+  }
   const { src, srcset, width, height, alt } = imgAttrs(media)
   const attrs = [
     `src="${escapeHTML(src)}"`,

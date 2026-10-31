@@ -9,6 +9,9 @@ export const getMediaUrl = (url: string | null | undefined, cacheTag?: string | 
   return cacheTag ? `${absolute}?${encodeURIComponent(cacheTag)}` : absolute
 }
 
+/** Videos are uploaded to the same collection; they render as <video> instead of <img>. */
+export const isVideo = (resource: Media): boolean => Boolean(resource.mimeType?.startsWith('video/'))
+
 export type ImgAttrs = {
   src: string
   srcset: string | undefined

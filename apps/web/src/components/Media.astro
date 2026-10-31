@@ -1,13 +1,14 @@
 ---
 import type { Media } from '@zeus/core/payload-types'
 
-import { imgAttrs } from '@/lib/media'
+import { getMediaUrl, imgAttrs, isVideo } from '@/lib/media'
 
 type Props = {
   resource: Media | string | number | null | undefined
   /** Image fills its positioned parent (port of next/image fill). */
   fill?: boolean
   imgClass?: string
+  videoClass?: string
   pictureClass?: string
   loading?: 'lazy' | 'eager'
   sizes?: string
@@ -17,16 +18,34 @@ const {
   resource,
   fill = false,
   imgClass,
+  videoClass,
   pictureClass,
   loading = 'lazy',
   sizes = '(max-width: 640px) 1280px, (max-width: 768px) 1536px, (max-width: 1024px) 2048px, (max-width: 1536px) 3072px, 100vw',
 } = Astro.props
 
-const attrs = resource && typeof resource === 'object' ? imgAttrs(resource) : null
+const media = resource && typeof resource === 'object' ? resource : null
+const video = media && isVideo(media) ? media : null
+const attrs = media && !video ? imgAttrs(media) : null
 
 const fillClasses = fill ? 'absolute inset-0 h-full w-full object-cover' : ''
 ---
 
+{
+  video && (
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="metadata"
+      aria-label={video.alt || undefined}
+      class:list={[fillClasses, videoClass ?? imgClass]}
+    >
+      <source src={getMediaUrl(video.url, video.updatedAt)} type={video.mimeType ?? undefined} />
+    </video>
+  )
+}
 {
   attrs && (
     <picture class={pictureClass}>
