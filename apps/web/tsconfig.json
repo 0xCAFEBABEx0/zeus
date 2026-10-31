@@ -1,34 +1,12 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist", ".vercel", "node_modules"],
   "compilerOptions": {
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "noUncheckedIndexedAccess": true,
     "paths": {
-      "react": [
-        "../../node_modules/@types/react"
-      ],
-      "@/*": [
-        "../../packages/core/src/*"
-      ],
-      "@payload-config": [
-        "../../packages/core/src/payload.config.ts"
-      ]
+      "@/*": ["./src/*"],
+      "@zeus/core/*": ["../../packages/core/src/*"]
     }
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "../../packages/core/src/**/*.ts",
-    "../../packages/core/src/**/*.tsx",
-    "next-sitemap.config.cjs"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  }
 }

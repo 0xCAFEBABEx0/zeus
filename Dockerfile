@@ -1,7 +1,8 @@
 # To use this Dockerfile, you have to set `output: 'standalone'` in your next.config.js file.
 # From https://github.com/vercel/next.js/blob/canary/examples/with-docker/Dockerfile
 #
-# Monorepo: build one app per image with `--build-arg APP=web` (ausor.ai, default) or `--build-arg APP=cms` (cms.ausor.ai)
+# Monorepo: builds the CMS (cms.ausor.ai). The website (apps/web) is an Astro app built for Vercel
+# with @astrojs/vercel and has no standalone server, so it cannot be packaged with this Dockerfile.
 
 FROM node:26.13.0-alpine AS base
 
@@ -70,7 +71,7 @@ CMD ["sleep", "infinity"]
 
 # Rebuild the source code only when needed
 FROM base AS builder
-ARG APP=web
+ARG APP=cms
 RUN apk add --no-cache curl bash
 WORKDIR /app
 
@@ -86,11 +87,12 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN if [ "$APP" != "cms" ]; then echo "Only APP=cms can be built into an image (apps/web deploys to Vercel)" && exit 1; fi
 RUN bun run build:${APP}
 
 # Production image, copy all the files and run next
 FROM base AS runner
-ARG APP=web
+ARG APP=cms
 WORKDIR /app
 
 ENV NODE_ENV production
@@ -105,8 +107,6 @@ RUN adduser --system --uid 1001 nextjs
 # The trace root is the monorepo root, so the app's server.js lives under apps/${APP}/
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${APP}/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/${APP}/.next/static ./apps/${APP}/.next/static
-# Only the web app has a public/ folder; the trailing glob keeps the COPY from failing for the CMS
-COPY --from=builder --chown=nextjs:nodejs /app/apps/${APP}/publi[c] ./apps/${APP}/public
 
 WORKDIR /app/apps/${APP}
 

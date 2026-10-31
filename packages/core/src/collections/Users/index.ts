@@ -17,8 +17,8 @@ export const Users: CollectionConfig = {
   },
   auth: {
     cookies: {
-      // Set to `.ausor.ai` in production so the website (ausor.ai) can read the admin session
-      // for draft previews and the admin bar. Leave unset on *.vercel.app and localhost.
+      // Set to `.ausor.ai` in production so the website (ausor.ai) receives the admin session
+      // for draft previews. Leave unset on *.vercel.app and localhost.
       domain: process.env.COOKIE_DOMAIN || undefined,
     },
   },
