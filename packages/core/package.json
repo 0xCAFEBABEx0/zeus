@@ -18,11 +18,9 @@
     "@payloadcms/richtext-lexical": "^3.92.0",
     "@payloadcms/storage-vercel-blob": "^3.92.0",
     "@payloadcms/ui": "^3.92.0",
-    "clsx": "^2.1.1",
     "graphql": "^16.14.2",
     "payload": "^3.92.0",
-    "sharp": "^0.35.5",
-    "tailwind-merge": "^3.7.0"
+    "sharp": "^0.35.5"
   },
   "peerDependencies": {
     "@sentry/nextjs": "^11.9.0",
