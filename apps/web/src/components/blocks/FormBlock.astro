@@ -37,10 +37,13 @@ const fields: NormalizedField[] = (form?.fields ?? []).map((field) => {
     required: Boolean(f.required),
     width: typeof f.width === 'number' ? f.width : null,
     options: Array.isArray(f.options) ? (f.options as SelectOption[]) : [],
+    // Number fields store their default as a number; inputs and options compare strings
     defaultValue:
       typeof f.defaultValue === 'string' || typeof f.defaultValue === 'boolean'
         ? f.defaultValue
-        : undefined,
+        : typeof f.defaultValue === 'number'
+          ? String(f.defaultValue)
+          : undefined,
     message: (f.message as SerializedEditorState | undefined) ?? null,
   }
 })
@@ -109,7 +112,7 @@ const widthStyle = (width: number | null) =>
                     name={f.name}
                     rows={5}
                     required={f.required}
-                  />
+                  >{typeof f.defaultValue === 'string' ? f.defaultValue : ''}</textarea>
                 </div>
               )}
 
