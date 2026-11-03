@@ -63,7 +63,7 @@ The two "Deploy to Vercel" workflows are identical, so each run appears twice; s
 | Setting | Value |
 |---|---|
 | Language | English (`en-US`) for reviews, summaries and chat |
-| Pull requests reviewed | Into `main` (the default branch: preview → main releases and `hotfix/*`) and into `development` (Dependabot). Drafts are skipped |
+| Pull requests reviewed | Into `main` (the default branch: preview → main releases and `hotfix/*`) and into `development`. Drafts and bot pull requests (Dependabot) are skipped |
 | Not reviewed | Generated files (`payload-types.ts`, the Payload admin files under `apps/cms/src/app/(payload)/`), migration snapshots (`migrations/*.json`), `prisma/`, lockfiles |
 | Path instructions | Access control, schema changes and migrations, revalidation, draft preview, ISR caching, `set:html`, environment variables, workflows and docs, per directory |
 | Pre-merge checks | English title (Conventional Commits prefix optional) and description; a "Production release notes" warning when a PR into `main` changes migrations, environment variables or Vercel/build settings without naming the manual step |
@@ -84,7 +84,7 @@ The two "Deploy to Vercel" workflows are identical, so each run appears twice; s
 - GitHub reads the file from `main` only, so edits to it take effect after they reach production.
 - Major updates of `@types/node` (follows the Node.js runtime major), `graphql`, `eslint` and `typescript` are ignored on purpose; remove the `ignore` entry when you are ready to upgrade.
 - Dependabot does not update the Node.js and Bun versions pinned in `.nvmrc`, `engines`, `packageManager`, the `Dockerfile` and the workflows; bump those by hand.
-- The CI workflows do not run on pull requests into `development`, so check out the Dependabot branch and run `bun run lint`, `bun run generate:types` and `bun run typecheck` before merging, or rely on the preview → main pull request.
+- The CI workflows do not run on pull requests into `development`, and CodeRabbit skips bot pull requests (comment `@coderabbitai review` to request one), so check out the Dependabot branch and run `bun run lint`, `bun run generate:types` and `bun run typecheck` before merging, or rely on the preview → main pull request.
 
 ## Hotfixes
 
