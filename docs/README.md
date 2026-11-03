@@ -18,7 +18,7 @@ Zeus is the content platform behind **ausor.ai**. It is a Bun workspace with two
 | [CONFIGURATION.md](./CONFIGURATION.md) | Environment variables per app and per environment | You set up an environment or add a variable |
 | [DEPLOYMENT.md](./DEPLOYMENT.md) | Vercel projects, environments, domains, builds, Docker, database changes, rollback | You ship a change |
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | Local setup, scripts, Payload CLI, seeding, troubleshooting | You start working on the code |
-| [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md) | Branches, commits, pull requests, CI, hotfixes | You commit, push or open a PR |
+| [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md) | Branches, commits, pull requests, code review (CodeRabbit), CI, hotfixes | You commit, push or open a PR |
 | [OPERATIONS.md](./OPERATIONS.md) | Monitoring (Sentry, Vercel Analytics, Checkly), cron jobs, runbooks | Something breaks in production |
 | [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) | Leftovers from the template, inconsistencies and technical debt | You plan clean-up work |
 

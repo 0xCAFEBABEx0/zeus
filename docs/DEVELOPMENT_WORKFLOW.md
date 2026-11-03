@@ -56,6 +56,21 @@ Then:
 
 The two "Deploy to Vercel" workflows are identical, so each run appears twice; see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md). Pushes to `development` only run CodeQL, so run the checks locally before pushing.
 
+## Code review
+
+[CodeRabbit](https://coderabbit.ai) reviews pull requests automatically, configured by [`.coderabbit.yaml`](../.coderabbit.yaml):
+
+| Setting | Value |
+|---|---|
+| Language | English (`en-US`) for reviews, summaries and chat |
+| Pull requests reviewed | Into `main` (the default branch: preview → main releases and `hotfix/*`) and into `development` (Dependabot). Drafts are skipped |
+| Not reviewed | Generated files (`payload-types.ts`, the Payload admin files under `apps/cms/src/app/(payload)/`), migration snapshots (`migrations/*.json`), `prisma/`, lockfiles |
+| Path instructions | Access control, schema changes and migrations, revalidation, draft preview, ISR caching, `set:html`, environment variables, workflows and docs, per directory |
+| Pre-merge checks | English title and description; a "Production release notes" warning when a PR into `main` changes migrations, environment variables or Vercel/build settings without naming the manual step |
+
+- CodeRabbit reads `.coderabbit.yaml` from the pull request's branch, so a change to it applies to the next pull request that contains it.
+- Comment `@coderabbitai review` to request a review manually (for example after automatic reviews were paused or rate-limited), or `@coderabbitai help` for the other commands.
+
 ## Dependency updates
 
 [`.github/dependabot.yml`](../.github/dependabot.yml) runs Dependabot version updates every Monday at 09:00 (Asia/Tokyo):
