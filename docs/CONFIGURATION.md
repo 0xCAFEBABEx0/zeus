@@ -29,7 +29,6 @@ Never commit real values. Secrets that both apps share (revalidation and preview
 | `NEXT_PUBLIC_SENTRY_DSN` | ✓ | ✓ | Build | DSN for browser events (the website exposes it to the browser as `PUBLIC_SENTRY_DSN`) |
 | `SENTRY_ORG`, `SENTRY_PROJECT` | ✓ | ✓ | Build | CMS: enable `withSentryConfig` (source-map upload, `/monitoring` tunnel); without them the build logs a warning and skips the upload. Website: project for the source-map upload. |
 | `SENTRY_AUTH_TOKEN` | ✓ | ✓ | Build | Authorises the source-map upload; the website skips the upload without it |
-| `NEXT_PUBLIC_VERCEL_ENV` | ✓ | | Build | Read by the (currently unused) `EnvironmentIndicator` admin component |
 
 Both apps report to the same Sentry project; events carry the tag `app: cms` or `app: web`. The Sentry environment is derived from `VERCEL_ENV`: `production` → `production`, `preview` → `staging`, otherwise `development`.
 

@@ -56,6 +56,21 @@ Then:
 
 The two "Deploy to Vercel" workflows are identical, so each run appears twice; see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md). Pushes to `development` only run CodeQL, so run the checks locally before pushing.
 
+## Dependency updates
+
+[`.github/dependabot.yml`](../.github/dependabot.yml) runs Dependabot version updates every Monday at 09:00 (Asia/Tokyo):
+
+| Ecosystem | Scope | Pull requests |
+|---|---|---|
+| `bun` | Root `package.json` and `bun.lock` (all workspaces) | Grouped: `payload`, `next-react`, `astro`, `sentry`, `tailwind`, then the remaining minor/patch bumps in one PR; other majors one PR each |
+| `github-actions` | `.github/workflows/*` | All action bumps in one PR |
+
+- Pull requests target `development` and are assigned to the repository owner. Merge them into `development`, then ship as a normal change.
+- GitHub reads the file from `main` only, so edits to it take effect after they reach production.
+- Major updates of `@types/node` (follows the Node.js runtime major), `graphql`, `eslint` and `typescript` are ignored on purpose; remove the `ignore` entry when you are ready to upgrade.
+- Dependabot does not update the Node.js and Bun versions pinned in `.nvmrc`, `engines`, `packageManager`, the `Dockerfile` and the workflows; bump those by hand.
+- The CI workflows do not run on pull requests into `development`, so check out the Dependabot branch and run `bun run lint`, `bun run generate:types` and `bun run typecheck` before merging, or rely on the preview → main pull request.
+
 ## Hotfixes
 
 ```bash
@@ -72,4 +87,4 @@ Merge the fix back so `preview` and `development` do not reintroduce the bug.
 
 - Protect `main`: require a pull request and passing status checks ("Lint and Type Check"), block force pushes.
 - Leave `development` and `preview` open for direct pushes, but block force pushes.
-- Enable Dependabot or Renovate for dependency updates and review Payload/Next.js upgrades on Preview before merging.
+- Review Dependabot's Payload/Next.js upgrades on Preview before merging them to `main` (see [Dependency updates](#dependency-updates)).

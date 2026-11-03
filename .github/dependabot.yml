@@ -1,0 +1,86 @@
+# Dependabot version updates.
+# Docs: https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+#
+# GitHub reads this file from the default branch (main) only, so changes here
+# take effect after they ship through development -> preview -> main.
+# Update pull requests target `development`, matching docs/DEVELOPMENT_WORKFLOW.md.
+version: 2
+
+updates:
+  # Bun workspace: the root package.json + bun.lock cover apps/cms, apps/web
+  # and packages/core.
+  - package-ecosystem: "bun"
+    directory: "/"
+    target-branch: "development"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    open-pull-requests-limit: 10
+    assignees:
+      - "0xCAFEBABEx0"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    groups:
+      # Payload packages must stay on the same version.
+      payload:
+        patterns:
+          - "payload"
+          - "@payloadcms/*"
+      # next and eslint-config-next are pinned to the same exact version.
+      next-react:
+        patterns:
+          - "next"
+          - "eslint-config-next"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      astro:
+        patterns:
+          - "astro"
+          - "@astrojs/*"
+      sentry:
+        patterns:
+          - "@sentry/*"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "daisyui"
+      # Everything else: one PR for minor/patch bumps; majors stay separate.
+      minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    ignore:
+      # @types/node follows the Node.js runtime major pinned in engines/.nvmrc.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # Held back on purpose: graphql is a Payload peer, ESLint 10 lacks
+      # plugin support, TypeScript 7 breaks typescript-eslint.
+      - dependency-name: "graphql"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "development"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Tokyo"
+    assignees:
+      - "0xCAFEBABEx0"
+    commit-message:
+      prefix: "ci"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

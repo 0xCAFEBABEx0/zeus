@@ -26,7 +26,7 @@ This document explains how the code is organised and why, so that changes land i
 | `search/` | Search plugin overrides (extra fields, `beforeSync`) |
 | `access/` | Access functions: `anyone`, `authenticated`, `authenticatedOrPublished` |
 | `hooks/` | Cross-collection hooks: `populatePublishedAt`, `revalidateRedirects`, `formatSlug` |
-| `components/` | Admin components only (BeforeLogin, BeforeDashboard with the seed button, EnvironmentIndicator) |
+| `components/` | Admin components only (BeforeLogin, BeforeDashboard with the seed button) |
 | `utilities/` | URL helpers, preview path, revalidation client, environment helpers |
 | `endpoints/seed/` | Demo content and the `seed()` function used by the CMS seed route |
 | `migrations/` | Payload migrations and their schema snapshots |

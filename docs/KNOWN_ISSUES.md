@@ -37,7 +37,6 @@ Findings from reviewing the code on `main` (2026-10-25), updated for the Astro w
 | U3 | `utilities/env.ts`: `getServerUrl()`, `getDatabaseUrl()`, `isProduction()` etc. | Unused; refer to `PAYLOAD_PUBLIC_SERVER_URL`, `DATABASE_URL` and `zeus.vercel.app`. Only `getSentryEnvironment()` is used. |
 | U4 | `DATABASE_URI` in `environment.d.ts` and `docker-compose.yml` | The config reads `POSTGRES_URL`; the Dev Container must set `POSTGRES_URL` in `.env`. `environment.d.ts` also lacks `POSTGRES_URL`, `PREVIEW_SECRET` and `CRON_SECRET`. |
 | U5 | `.env.example` lists many variables the apps never read | See [CONFIGURATION.md](./CONFIGURATION.md#variables-in-envexample-that-the-code-does-not-read) |
-| U6 | `components/EnvironmentIndicator` | Not rendered anywhere |
 | U7 | `hooks/formatSlug.ts` | Duplicate of `fields/slug/formatSlug.ts`, unused |
 | U8 | `@payloadcms/db-vercel-postgres` dependency | Only imported for types by the two oldest migrations; the app uses `@payloadcms/db-postgres` |
 | U9 | `payloadCloudPlugin()` | Does nothing outside Payload Cloud |
