@@ -3,8 +3,8 @@
 # Schema: https://coderabbit.ai/integrations/schema.v2.json
 # yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 #
-# CodeRabbit reads this file from the pull request's head branch, so a change here takes effect
-# on the next pull request that contains it. See docs/DEVELOPMENT_WORKFLOW.md#code-review.
+# CodeRabbit reads this file from the pull request's head branch, so a change here already applies
+# to the review of the pull request that contains it. See docs/DEVELOPMENT_WORKFLOW.md#code-review.
 
 language: en-US
 tone_instructions: >-
@@ -169,8 +169,9 @@ reviews:
     title:
       mode: warning
       requirements: >-
-        Written in English, concise and descriptive. A preview → main pull request summarises the release; other
-        pull requests use a Conventional Commits prefix (feat, fix, docs, chore, ci, refactor, perf, test).
+        Written in English, concise and descriptive. A Conventional Commits prefix (feat, fix, docs, chore, ci,
+        refactor, perf, test) is welcome but not required: release pull requests from preview into main summarise
+        the release in plain words.
     description:
       mode: warning
     custom_checks:
@@ -179,8 +180,8 @@ reviews:
         instructions: |
           Applies only when the base branch is `main`; otherwise pass.
           Pass if the pull request description summarises what is released and, for each of the following that the
-          diff contains, names the manual step: a new or changed file in `packages/core/src/migrations/` (database
-          change to apply), a new environment variable (which Vercel project needs it), or a change to `vercel.json`,
+          diff contains, names the manual step: a new or changed `.ts` migration in `packages/core/src/migrations/`
+          (database change to apply; a `.json` snapshot alone does not count), a new environment variable (which Vercel project needs it), or a change to `vercel.json`,
           `astro.config.mjs` or `next.config.mjs` that needs Vercel settings. Fail if such a change is present and the
           description does not mention its manual step.
 
