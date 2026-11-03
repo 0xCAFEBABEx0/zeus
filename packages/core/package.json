@@ -19,7 +19,7 @@
     "@payloadcms/storage-vercel-blob": "^3.92.0",
     "@payloadcms/ui": "^3.92.0",
     "graphql": "^16.14.2",
-    "payload": "^3.92.0",
+    "payload": "^3.92.1",
     "sharp": "^0.35.5"
   },
   "peerDependencies": {
