@@ -51,7 +51,13 @@ updates:
           - "@tailwindcss/*"
           - "daisyui"
       # Everything else: one PR for minor/patch bumps; majors stay separate.
+      # `patterns: ["*"]` is required: Dependabot ranks a group without
+      # patterns as more specific than `@scope/*`, so it would otherwise pull
+      # @payloadcms/* and @sentry/* out of their groups
+      # (https://github.com/dependabot/dependabot-core/issues/14902).
       minor-and-patch:
+        patterns:
+          - "*"
         update-types:
           - "minor"
           - "patch"
