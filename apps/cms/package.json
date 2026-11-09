@@ -20,7 +20,7 @@
     "@zeus/core": "workspace:*",
     "cross-env": "^10.1.0",
     "graphql": "^16.14.2",
-    "next": "16.4.3",
+    "next": "16.4.5",
     "payload": "^3.93.0",
     "react": "19.3.1",
     "react-dom": "19.3.1"
