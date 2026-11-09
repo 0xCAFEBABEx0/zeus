@@ -15,13 +15,13 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload"
   },
   "dependencies": {
-    "@payloadcms/next": "^3.92.1",
+    "@payloadcms/next": "^3.93.0",
     "@sentry/nextjs": "^11.10.0",
     "@zeus/core": "workspace:*",
     "cross-env": "^10.1.0",
     "graphql": "^16.14.2",
     "next": "16.4.3",
-    "payload": "^3.92.1",
+    "payload": "^3.93.0",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
