@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@payloadcms/next": "^3.93.0",
-    "@sentry/nextjs": "^11.10.0",
+    "@sentry/nextjs": "^11.11.0",
     "@zeus/core": "workspace:*",
     "cross-env": "^10.1.0",
     "graphql": "^16.14.2",
