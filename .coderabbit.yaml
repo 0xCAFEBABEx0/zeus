@@ -148,8 +148,8 @@ reviews:
         - Install with `bun install --frozen-lockfile` and keep the Node.js and Bun versions in line with `.nvmrc`,
           `package.json` (`engines`, `packageManager`) and the `Dockerfile`.
         - Use least-privilege `permissions`, do not print secrets, and avoid `pull_request_target` with untrusted code.
-        - `deploy.yml` and `deployment.yml` are known duplicates (docs/KNOWN_ISSUES.md U1); edits must keep them in sync
-          until one is removed.
+        - `deploy.yml` is the only lint/type-check workflow (pull requests into `main` and `development`); Vercel deploys
+          through its Git integration, limited to `main` and `preview` by each app's `vercel.json`.
 
     - path: '{.env.example,packages/core/src/environment.d.ts,apps/cms/next.config.mjs,apps/web/astro.config.mjs}'
       instructions: |

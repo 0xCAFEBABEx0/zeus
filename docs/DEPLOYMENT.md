@@ -6,10 +6,12 @@ The CMS (`apps/cms`, cms.ausor.ai) and the website (`apps/web`, ausor.ai) are de
 
 | Branch | Vercel environment | Deployed | Website | CMS |
 |---|---|---|---|---|
-| `development` | — | No (`deploymentEnabled.development: false`) | — | — |
+| `development` | — | No | — | — |
 | `preview` | Preview | Yes | `preview.ausor.ai` | CMS project's preview URL |
 | `main` | Production | Yes | `ausor.ai` | `cms.ausor.ai` |
-| other branches | — | No (only `main` and `preview` are enabled) | — | — |
+| other branches (`hotfix/*`, Dependabot, feature branches) | — | No | — | — |
+
+Each app's `vercel.json` sets `git.deploymentEnabled` to `{"main": true, "preview": true, "**": false}`. A branch matching several keys is deployed when any of them is `true`, so only `main` and `preview` deploy. This also keeps the Neon integration from creating a database branch for every Git branch.
 
 Changes move `development` → `preview` → `main`; see [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md).
 
