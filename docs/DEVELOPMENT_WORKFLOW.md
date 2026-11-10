@@ -54,7 +54,7 @@ Then:
 | `deploy.yml` ("Deploy to Vercel") | Push to `main` or `preview`, PR into `main` or `development` | Install with Bun (frozen lockfile), `bun run lint`, `bun run generate:types`, `bun run typecheck`. The Vercel deploy jobs are commented out; deployments come from the Vercel Git integration. |
 | `codeql.yml` | Push to `main`, `preview`, `development`; PR into `main`; weekly (Monday 10:36 UTC) | CodeQL analysis for JavaScript/TypeScript |
 
-The two "Deploy to Vercel" workflows are identical, so each run appears twice; see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md). Pushes to `development` only run CodeQL, so run the checks locally before pushing.
+Direct pushes to `development` only run CodeQL ("Lint and Type Check" runs on pull requests into `development`), so run the checks locally before pushing.
 
 ## Code review
 
