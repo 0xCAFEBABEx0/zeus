@@ -29,7 +29,7 @@ Both projects belong to the same Vercel team and are connected to this repositor
 | Node.js | 26 (`NODE_VERSION` in `vercel.json`) | 26 |
 | Production domains | `ausor.ai`, `www.ausor.ai` → redirect | `cms.ausor.ai` |
 | Preview domain | `preview.ausor.ai` | Vercel preview URL |
-| Cron | — | `GET /api/payload-jobs/run` at `0 0 * * *` (UTC) |
+| Schedules | — | `payload-jobs`: `GET /api/payload-jobs/run` at `0 * * * *` (UTC) |
 | Function limits | Defaults (one function for every route, Node.js 26) | `/api/*`: `maxDuration` 30 s; `/next/seed`: 60 s |
 
 Notes:
@@ -112,4 +112,4 @@ docker build -t zeus-cms .   # cms.ausor.ai (APP=cms is the only accepted value)
 docker run -p 3000:3000 --env-file apps/cms/.env zeus-cms
 ```
 
-The image listens on port 3000 inside the container. Pass `--build-arg BUN_FROZEN_LOCKFILE=true` for reproducible installs. Provide the same environment variables as on Vercel; the Vercel cron job must be replaced by an external scheduler calling `/api/payload-jobs/run` with `CRON_SECRET`. The image's `development` target is used by the Dev Container (see [DEVELOPMENT.md](./DEVELOPMENT.md)).
+The image listens on port 3000 inside the container. Pass `--build-arg BUN_FROZEN_LOCKFILE=true` for reproducible installs. Provide the same environment variables as on Vercel; the Vercel schedule must be replaced by an external scheduler calling `/api/payload-jobs/run` with `CRON_SECRET`. The image's `development` target is used by the Dev Container (see [DEVELOPMENT.md](./DEVELOPMENT.md)).

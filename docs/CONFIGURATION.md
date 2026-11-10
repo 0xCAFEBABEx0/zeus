@@ -17,7 +17,7 @@ Never commit real values. Secrets that both apps share (revalidation and preview
 | `PREVIEW_SECRET` | ✓ | ✓ | Yes | Shared secret embedded in preview URLs by the CMS and checked by `/next/preview`. |
 | `COOKIE_DOMAIN` | ✓ | | Production only | Domain of the admin session cookie, `.ausor.ai`, so the website can read it for draft preview. Leave unset on `localhost` and `*.vercel.app`, or admin login breaks. |
 | `CMS_PROTECTION_BYPASS` | | ✓ | Preview, when the CMS is protected | "Protection Bypass for Automation" secret of the CMS project. Sent as `x-vercel-protection-bypass` on every CMS request so that the website can read a CMS deployment behind Vercel Deployment Protection. Without it those requests fail with "CMS request redirected to https://vercel.com/...". |
-| `CRON_SECRET` | ✓ | | Yes on Vercel | Bearer token Vercel Cron sends to `/api/payload-jobs/run`. |
+| `CRON_SECRET` | ✓ | | Yes on Vercel | Bearer token Vercel Schedules sends to `/api/payload-jobs/run`. |
 
 `NEXT_PUBLIC_*` values are inlined into the CMS browser bundle at build time, so changing them requires a redeploy. The website reads its variables at runtime on the server (`env()` in `apps/web/src/lib/env.ts`), except for `REVALIDATION_SECRET`'s ISR token and the Sentry values, which are fixed at build time. The names keep the `NEXT_PUBLIC_` prefix so that both apps share them.
 

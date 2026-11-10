@@ -21,7 +21,7 @@ Out of scope (not implemented): public user accounts or sign-up, comments, e-com
 | Visitor | Anyone browsing ausor.ai | Anonymous |
 | Editor | A person who signs in to the CMS. Every signed-in user has full access to all content and to other user accounts; there are no roles. | A document in the `users` collection; session cookie `payload-token` |
 | CMS app | Calls the website after content changes so cached pages are refreshed | `REVALIDATION_SECRET` bearer token |
-| Vercel Cron | Runs the Payload job queue once a day | `CRON_SECRET` bearer token |
+| Vercel Schedules | Runs the Payload job queue every hour | `CRON_SECRET` bearer token |
 
 ## Functional requirements: website (ausor.ai)
 
@@ -80,7 +80,7 @@ Out of scope (not implemented): public user accounts or sign-up, comments, e-com
 - **CMS-9** Publishing a post updates the search index automatically.
 - **CMS-10** Changing published content refreshes the website's cache within seconds (on-demand revalidation, see [DESIGN.md](./DESIGN.md#rendering-and-caching)).
 - **CMS-11** The dashboard has a "Seed" button that **deletes** all pages, posts, media, categories, forms, form submissions and search entries and replaces them with demo content. It is meant for empty or local databases only.
-- **CMS-12** The Payload job queue (used by scheduled publishing) runs once a day at 00:00 UTC via Vercel Cron. Signed-in users can also trigger it.
+- **CMS-12** The Payload job queue (used by scheduled publishing) runs every hour via Vercel Schedules (the `payload-jobs` schedule; on Hobby each run starts within 15 minutes of the hour). Signed-in users can also trigger it.
 - **CMS-13** A REST API (`/api/*`) and a GraphQL API (`/api/graphql`, playground at `/api/graphql-playground`) expose all collections, subject to the access rules in [DATA_MODEL.md](./DATA_MODEL.md#access-control).
 
 ## Non-functional requirements
