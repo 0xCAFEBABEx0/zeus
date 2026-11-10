@@ -49,7 +49,7 @@ The CMS database is the Neon project `neon-purple-village`, created through Verc
 | Preview | `preview`, created by "Create database branch for deployment" on the first Preview deployment of the `preview` Git branch and reused afterwards |
 | Development | none; use a local database (see [DEVELOPMENT.md](./DEVELOPMENT.md)) |
 
-- The `preview` database branch starts as a copy of `main` and then drifts. Use "Reset from parent" in the Neon console to copy production data into it again; this discards the content edited on the preview CMS.
+- The `preview` database branch starts as a copy of `main` and then drifts. Use "Reset from parent" in the Neon console to copy production data into it again; this discards the content edited on the preview CMS and any schema changes applied only to `preview`. Builds do not run migrations, so after a reset reapply any migrations that are on `preview` but not yet in production (see [Database changes](#database-changes)) before using the preview CMS.
 - The integration deletes a database branch only when every Vercel deployment of its Git branch is deleted. The Free plan allows 10 branches; when the limit is reached, Preview deployments of the CMS fail during "Provisioning Integrations" with "Branch limit reached". Delete unused branches (for example `preview/<git-branch>` from other Git branches) in the Neon console.
 - Before risky changes, take a snapshot of `main` in the Neon console (Backup & Restore).
 
