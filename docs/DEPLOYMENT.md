@@ -39,13 +39,27 @@ Notes:
 - "Skip unaffected projects" is enabled, so a change that only touches one app builds only that project. Changes under `packages/core` or the root rebuild both.
 - Preview deployments are protected by Vercel Authentication. The website reads the preview CMS with `CMS_PROTECTION_BYPASS` (the CMS project's "Protection Bypass for Automation" secret). Enabling the same feature on the website project lets `/api/revalidate` re-render its own protected Preview pages.
 
+### Database (Neon)
+
+The CMS database is the Neon project `neon-purple-village`, created through Vercel's native Neon integration (Vercel Storage). The integration is connected to `zeus-cms` only, for Production and Preview, with no variable prefix, and sets `POSTGRES_URL` and the other `POSTGRES_*`/`PG*` variables itself. Do not add database variables to `zeus-cms` by hand, and do not connect the integration to `zeus-web`: the website has no database access.
+
+| Vercel environment | Neon branch |
+|---|---|
+| Production | `main` (the integration's production branch; Neon blocks deleting it) |
+| Preview | `preview`, created by "Create database branch for deployment" on the first Preview deployment of the `preview` Git branch and reused afterwards |
+| Development | none; use a local database (see [DEVELOPMENT.md](./DEVELOPMENT.md)) |
+
+- The `preview` database branch starts as a copy of `main` and then drifts. Use "Reset from parent" in the Neon console to copy production data into it again; this discards the content edited on the preview CMS.
+- The integration deletes a database branch only when every Vercel deployment of its Git branch is deleted. The Free plan allows 10 branches; when the limit is reached, Preview deployments of the CMS fail during "Provisioning Integrations" with "Branch limit reached". Delete unused branches (for example `preview/<git-branch>` from other Git branches) in the Neon console.
+- Before risky changes, take a snapshot of `main` in the Neon console (Backup & Restore).
+
 ### DNS
 
 Point `ausor.ai` (apex `A 76.76.21.21`) and `cms.ausor.ai` (`CNAME cname.vercel-dns.com`) at Vercel, or use the exact records Vercel shows when the domain is added.
 
 ### Environment variables
 
-Set the variables from [CONFIGURATION.md](./CONFIGURATION.md) on both projects for each Vercel environment. Production builds stop with `Missing required environment variables: ...` when the CMS lacks `NEXT_PUBLIC_SERVER_URL` or the website lacks `NEXT_PUBLIC_CMS_URL` or `REVALIDATION_SECRET`. The website needs no database, Payload or Blob variables.
+Set the variables from [CONFIGURATION.md](./CONFIGURATION.md) on both projects for each Vercel environment. The database variables of the CMS come from the Neon integration (see above). Production builds stop with `Missing required environment variables: ...` when the CMS lacks `NEXT_PUBLIC_SERVER_URL` or the website lacks `NEXT_PUBLIC_CMS_URL` or `REVALIDATION_SECRET`. The website needs no database, Payload or Blob variables.
 
 ## What a build does
 
@@ -72,7 +86,7 @@ ISR caches are per deployment, so a new deployment starts with an empty cache an
 Because builds never migrate, a release that changes the schema needs a manual step:
 
 1. Create the migration locally (see [DATA_MODEL.md](./DATA_MODEL.md#migrations)) and review the SQL.
-2. Before merging into `preview`, apply it to the database used by Preview deployments; before merging into `main`, apply it to the production database. Use `bun run payload migrate` from `apps/cms` with `POSTGRES_URL` pointing at the target, or run the generated SQL directly.
+2. Before merging into `preview`, apply it to the database used by Preview deployments (Neon branch `preview`); before merging into `main`, apply it to the production database. Use `bun run payload migrate` from `apps/cms` with `POSTGRES_URL` pointing at the target, or run the generated SQL directly.
 3. Prefer additive changes (new nullable columns/tables) so the running deployment keeps working while the schema is ahead of the code.
 4. Deploy, then verify the CMS and website.
 
@@ -87,7 +101,7 @@ Because builds never migrate, a release that changes the schema needs a manual s
 
 - **Code:** in each Vercel project, promote the previous production deployment ("Instant Rollback"). Then revert the change on `main` (and `preview`/`development`) so the next deployment does not bring it back.
 - **Content:** restore an earlier version from the document's Versions tab in the CMS (pages and posts keep 50 versions).
-- **Schema:** run the migration's `down` function or reverse the SQL by hand. Take a database backup or a Neon branch before risky migrations.
+- **Schema:** run the migration's `down` function or reverse the SQL by hand. Take a Neon snapshot of `main` before risky migrations.
 
 ## Docker (alternative hosting)
 
