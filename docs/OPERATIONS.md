@@ -58,9 +58,15 @@ Useful website log lines:
 
 | Job | Schedule | Endpoint | Auth |
 |---|---|---|---|
-| Payload job queue | Daily, 00:00 UTC (`apps/cms/vercel.json`) | `GET /api/payload-jobs/run` on the CMS | `Authorization: Bearer $CRON_SECRET` (sent by Vercel Cron) |
+| Payload job queue | Hourly, `0 * * * *` UTC (`payload-jobs` in `apps/cms/vercel.json`) | `GET /api/payload-jobs/run` on the CMS | `Authorization: Bearer $CRON_SECRET` (sent by Vercel Schedules) |
 
-Scheduled publishing of pages and posts is processed by this job queue, so a scheduled publish takes effect at the next run (at most about a day late). Trigger the queue by hand by opening `/api/payload-jobs/run` while signed in to the CMS, or:
+The job runs on [Vercel Schedules](https://vercel.com/docs/schedules) (public beta), which replaced Vercel Cron Jobs. On Hobby every run starts at a random point within 15 minutes of the scheduled time, and a team gets 5,000 runs per billing period (this schedule uses about 720 in production). Runs are not retried when the route fails.
+
+Scheduled publishing of pages and posts is processed by this job queue, so a scheduled publish normally takes effect at the next run, about 75 minutes late at most. It can take longer when more than 10 jobs are due at once (Payload runs up to 10 per request by default, so the rest wait for the next run) or when a scheduled run fails or is skipped (Vercel does not retry it).
+
+Manage the schedule on the CMS project's **Schedules** page in the Vercel dashboard, where you can see its run history, run it now, or disable it without redeploying. Production schedules are active as soon as a production deployment declares them. Preview branches get their own copy of the schedule, which starts **inactive** so a Preview deployment does not run jobs on its own; enable it there (optionally until a set time) to test it. Vercel sends the `CRON_SECRET` of the environment the deployment belongs to, read when the deployment becomes current, so redeploy after rotating it.
+
+Trigger the queue by hand by opening `/api/payload-jobs/run` while signed in to the CMS, or:
 
 ```bash
 curl -H "Authorization: Bearer $CRON_SECRET" https://cms.ausor.ai/api/payload-jobs/run

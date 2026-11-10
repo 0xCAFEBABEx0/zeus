@@ -8,7 +8,7 @@ Never commit real values. Secrets that both apps share (revalidation and preview
 
 | Variable | CMS | Web | Required | Description |
 |---|---|---|---|---|
-| `POSTGRES_URL` | ✓ | | Yes | PostgreSQL connection string used by Payload. The config throws at start-up when it is missing (except in CI, tests and type generation). The website has no database access. |
+| `POSTGRES_URL` | ✓ | | Yes | PostgreSQL connection string used by Payload. The config throws at start-up when it is missing (except in CI, tests and type generation). On Vercel the Neon integration sets it on the CMS project for Production and Preview; do not set it by hand (see [DEPLOYMENT.md](./DEPLOYMENT.md#database-neon)). The website has no database access. |
 | `PAYLOAD_SECRET` | ✓ | | Yes | Signs Payload auth tokens. The website verifies an editor's session by calling the CMS (`/api/users/me`), so it does not need this secret. |
 | `BLOB_READ_WRITE_TOKEN` | ✓ | | Yes in deployed environments | Vercel Blob token for media. Without it the storage plugin is disabled and uploads go to the local disk. |
 | `NEXT_PUBLIC_SERVER_URL` | ✓ (required in production builds) | ✓ | Yes | Website origin, no trailing slash. Used for links, SEO URLs, sitemaps, preview URLs and revalidation calls. The website falls back to `VERCEL_PROJECT_PRODUCTION_URL`, the CMS must set it. |
@@ -17,7 +17,7 @@ Never commit real values. Secrets that both apps share (revalidation and preview
 | `PREVIEW_SECRET` | ✓ | ✓ | Yes | Shared secret embedded in preview URLs by the CMS and checked by `/next/preview`. |
 | `COOKIE_DOMAIN` | ✓ | | Production only | Domain of the admin session cookie, `.ausor.ai`, so the website can read it for draft preview. Leave unset on `localhost` and `*.vercel.app`, or admin login breaks. |
 | `CMS_PROTECTION_BYPASS` | | ✓ | Preview, when the CMS is protected | "Protection Bypass for Automation" secret of the CMS project. Sent as `x-vercel-protection-bypass` on every CMS request so that the website can read a CMS deployment behind Vercel Deployment Protection. Without it those requests fail with "CMS request redirected to https://vercel.com/...". |
-| `CRON_SECRET` | ✓ | | Yes on Vercel | Bearer token Vercel Cron sends to `/api/payload-jobs/run`. |
+| `CRON_SECRET` | ✓ | | Yes on Vercel | Bearer token Vercel Schedules sends to `/api/payload-jobs/run`. |
 
 `NEXT_PUBLIC_*` values are inlined into the CMS browser bundle at build time, so changing them requires a redeploy. The website reads its variables at runtime on the server (`env()` in `apps/web/src/lib/env.ts`), except for `REVALIDATION_SECRET`'s ISR token and the Sentry values, which are fixed at build time. The names keep the `NEXT_PUBLIC_` prefix so that both apps share them.
 
@@ -53,7 +53,7 @@ Both apps report to the same Sentry project; events carry the tag `app: cms` or 
 | `NEXT_PUBLIC_SERVER_URL` | `http://localhost:3000` | `https://preview.ausor.ai` | `https://ausor.ai` |
 | `NEXT_PUBLIC_CMS_URL` | `http://localhost:3001` | preview URL of the CMS project | `https://cms.ausor.ai` |
 | `COOKIE_DOMAIN` | unset | unset (see note) | `.ausor.ai` |
-| `POSTGRES_URL` (CMS) | local or development database | per Vercel environment setting | production database |
+| `POSTGRES_URL` (CMS) | local database | Neon branch `preview` (set by the integration) | Neon branch `main` (set by the integration) |
 | `CMS_PROTECTION_BYPASS` (web) | unset | CMS project's automation bypass secret | unset |
 
 Note: the website and CMS preview deployments only share the editor's session when both run on `*.ausor.ai` (for example `preview.ausor.ai` and `cms-preview.ausor.ai`) with `COOKIE_DOMAIN=.ausor.ai` set in the Preview environment. Preview deployments are also behind Vercel Authentication, which blocks server-to-server calls between the two preview apps: the website needs `CMS_PROTECTION_BYPASS` to read the CMS, and revalidation from the CMS to the website is rejected unless the website's protection allows it.
@@ -62,7 +62,7 @@ When upgrading an existing website deployment from the Next.js version, `POSTGRE
 
 ## Variables in `.env.example` that the code does not read
 
-These come from the Vercel/Neon integrations or older setups. They are harmless but are not used by the apps:
+These come from the Vercel/Neon integrations or older setups. The Neon integration still sets the database and Neon Auth ones on the CMS project. They are harmless but are not used by the apps:
 
 - `DATABASE_URL` (only read by the unused `getDatabaseUrl()` helper), `FORCE_USE_VERCEL_POSTGRES`
 - `POSTGRES_URL_NON_POOLING`, `POSTGRES_USER`, `POSTGRES_HOST`, `POSTGRES_PASSWORD`, `POSTGRES_DATABASE`, `POSTGRES_URL_NO_SSL`, `POSTGRES_PRISMA_URL`, `PGHOST`, `PGHOST_UNPOOLED`, `PGUSER`, `PGDATABASE`, `PGPASSWORD`

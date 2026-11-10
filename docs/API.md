@@ -18,7 +18,7 @@ This document lists every HTTP endpoint the two apps expose. Payload's standard 
 | POST | `/api/users/forgot-password`, `/api/users/reset-password` | — | Password reset (needs an e-mail adapter to deliver mail) |
 | GET | `/api/media/file/{filename}` | Anyone | Serves an uploaded file (streamed from Vercel Blob) |
 | POST | `/api/form-submissions` | Anyone | Submit a form, see below |
-| GET | `/api/payload-jobs/run` | Session or `Authorization: Bearer $CRON_SECRET` | Runs queued Payload jobs (Vercel Cron, daily 00:00 UTC) |
+| GET | `/api/payload-jobs/run` | Session or `Authorization: Bearer $CRON_SECRET` | Runs queued Payload jobs (Vercel Schedules, hourly) |
 | POST | `/api/graphql` | Per collection | GraphQL API |
 | GET | `/api/graphql-playground` | — | GraphQL playground (Payload disables it in production) |
 
