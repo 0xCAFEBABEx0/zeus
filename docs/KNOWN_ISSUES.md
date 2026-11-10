@@ -32,7 +32,6 @@ Findings from reviewing the code on `main` (2026-10-25), updated for the Astro w
 
 | # | Item | Notes |
 |---|---|---|
-| U1 | `.github/workflows/deploy.yml` and `deployment.yml` are identical | Every push runs lint/typecheck twice. Keep one. |
 | U2 | `prisma/schema.prisma` | Not used; Payload owns the schema. `.cursor/rules/project.mdc` still says "Use Prisma schema for database modeling". |
 | U3 | `utilities/env.ts`: `getServerUrl()`, `getDatabaseUrl()`, `isProduction()` etc. | Unused; refer to `PAYLOAD_PUBLIC_SERVER_URL`, `DATABASE_URL` and `zeus.vercel.app`. Only `getSentryEnvironment()` is used. |
 | U4 | `DATABASE_URI` in `environment.d.ts` and `docker-compose.yml` | The config reads `POSTGRES_URL`; the Dev Container must set `POSTGRES_URL` in `.env`. `environment.d.ts` also lacks `POSTGRES_URL`, `PREVIEW_SECRET` and `CRON_SECRET`. |

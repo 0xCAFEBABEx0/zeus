@@ -51,7 +51,7 @@ Then:
 
 | Workflow | Trigger | Jobs |
 |---|---|---|
-| `deploy.yml` / `deployment.yml` ("Deploy to Vercel") | Push to `main` or `preview`, PR into `main` | Install with Bun (frozen lockfile), `bun run lint`, `bun run generate:types`, `bun run typecheck`. The Vercel deploy jobs are commented out; deployments come from the Vercel Git integration. |
+| `deploy.yml` ("Deploy to Vercel") | Push to `main` or `preview`, PR into `main` or `development` | Install with Bun (frozen lockfile), `bun run lint`, `bun run generate:types`, `bun run typecheck`. The Vercel deploy jobs are commented out; deployments come from the Vercel Git integration. |
 | `codeql.yml` | Push to `main`, `preview`, `development`; PR into `main`; weekly (Monday 10:36 UTC) | CodeQL analysis for JavaScript/TypeScript |
 
 The two "Deploy to Vercel" workflows are identical, so each run appears twice; see [KNOWN_ISSUES.md](./KNOWN_ISSUES.md). Pushes to `development` only run CodeQL, so run the checks locally before pushing.
@@ -84,7 +84,7 @@ The two "Deploy to Vercel" workflows are identical, so each run appears twice; s
 - GitHub reads the file from `main` only, so edits to it take effect after they reach production.
 - Major updates of `@types/node` (follows the Node.js runtime major), `graphql`, `eslint` and `typescript` are ignored on purpose; remove the `ignore` entry when you are ready to upgrade.
 - Dependabot does not update the Node.js and Bun versions pinned in `.nvmrc`, `engines`, `packageManager`, the `Dockerfile` and the workflows; bump those by hand.
-- The CI workflows do not run on pull requests into `development`, and CodeRabbit skips bot pull requests (comment `@coderabbitai review` to request one), so check out the Dependabot branch and run `bun run lint`, `bun run generate:types` and `bun run typecheck` before merging, or rely on the preview → main pull request.
+- Vercel does not deploy Dependabot branches (only `main` and `preview` are deployed), so a Dependabot pull request gets no preview deployment. Its checks are the "Lint and Type Check" job of `deploy.yml`, which runs on pull requests into `development`. It does not build the apps, and CodeRabbit skips bot pull requests (comment `@coderabbitai review` to request one), so for Payload, Next.js or Astro upgrades also run `bun run build` locally before merging, or rely on the preview deployment and the preview → main pull request.
 
 ## Hotfixes
 
