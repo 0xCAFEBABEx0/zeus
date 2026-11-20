@@ -76,7 +76,7 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.POSTGRES_URL || 'postgresql://dummy:dummy@localhost:5432/dummy',
-      ssl: process.env.NODE_ENV === 'development' ? false : { rejectUnauthorized: false },
+      ssl: process.env.NODE_ENV !== 'development',
     },
     migrationDir: path.resolve(dirname, 'migrations'),
   }),
