@@ -1,4 +1,5 @@
-import type { Field, GroupField } from 'payload'
+import type { Field, GroupField, TextFieldSingleValidation } from 'payload'
+import { sanitizeUrl, text } from 'payload/shared'
 
 import deepMerge from '@/utilities/deepMerge'
 
@@ -86,6 +87,13 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Custom URL',
       required: true,
+      validate: ((value, options) => {
+        const result = text(value, options)
+        if (result !== true || !value) return result
+        return sanitizeUrl(value) === '#' && value.trim() !== '#'
+          ? 'Use an http, https, mailto or tel URL, or a relative path.'
+          : true
+      }) as TextFieldSingleValidation,
     },
   ]
 
