@@ -120,11 +120,11 @@ Entered from the CMS Preview button and live preview (URLs are built by `generat
 | `slug` | Document slug |
 | `previewSecret` | Must equal `PREVIEW_SECRET` |
 
-Responses: `403` for a wrong secret or no signed-in user (the `payload-token` cookie must be readable on the website and accepted by the CMS's `/api/users/me`), `404` when a parameter is missing, `500` for a non-relative path or when `REVALIDATION_SECRET` is unset; otherwise the `__prerender_bypass` cookie (HTTP-only, `SameSite=None; Secure`, so that it also works inside the live preview iframe) is set and the request is redirected (307) to `path`.
+Responses: `403` for a wrong secret or no signed-in user (the `payload-token` cookie must be readable on the website and accepted by the CMS's `/api/users/me`), `404` when a parameter is missing, `500` for a path that is not a same-origin relative path (it must start with a single `/` and contain no backslash or control character) or when `REVALIDATION_SECRET` is unset; otherwise the `__prerender_bypass` cookie (HTTP-only, `SameSite=None; Secure`, so that it also works inside the live preview iframe) is set and the request is redirected (307) to the `pathname` and `search` of `path`.
 
 ### `GET /next/exit-preview`
 
-Clears the draft cookie and redirects (307) to the relative `path` query parameter, or to `/`.
+Clears the draft cookie and redirects (307) to the relative `path` query parameter, or to `/` when it is missing or not a same-origin path (see `sameOriginPath()` in `apps/web/src/lib/redirect.ts`).
 
 ## Sentry tunnel (CMS)
 
