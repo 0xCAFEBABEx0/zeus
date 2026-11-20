@@ -738,7 +738,7 @@ export interface Form {
 export interface Redirect {
   id: number;
   /**
-   * You will need to rebuild the website when changing this field.
+   * Path to redirect from, e.g. /old-page. The website applies changes within a minute.
    */
   from: string;
   to?: {
