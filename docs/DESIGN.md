@@ -133,7 +133,7 @@ Because the session cookie is issued by the CMS, the website only receives it wh
 | Cross-app calls | `/api/revalidate` requires `Bearer REVALIDATION_SECRET`; `/next/preview` requires `PREVIEW_SECRET` and a valid CMS session. The draft cookie holds a hash of `REVALIDATION_SECRET`, never the secret itself |
 | Jobs endpoint | Signed-in users, or `Authorization: Bearer CRON_SECRET` |
 | CORS | Payload allows only the website and CMS origins |
-| Database TLS | SSL is required outside `NODE_ENV=development` (`rejectUnauthorized: false`) |
+| Database TLS | SSL with certificate and hostname verification is required outside `NODE_ENV=development`; the server certificate must chain to a trusted CA (Neon's does) |
 | Diagnostics | The CMS's `/api/sentry-test` returns 404 in production |
 
 ## Extension recipes
