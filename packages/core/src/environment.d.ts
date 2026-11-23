@@ -9,6 +9,8 @@ declare global {
       NEXT_PUBLIC_CMS_URL: string
       /** Shared secret the CMS uses to call the website's /api/revalidate */
       REVALIDATION_SECRET?: string
+      /** Bearer token Vercel Schedules sends to /api/payload-jobs/run */
+      CRON_SECRET?: string
       /** Admin session cookie domain, e.g. .ausor.ai (production only) */
       COOKIE_DOMAIN?: string
       VERCEL_PROJECT_PRODUCTION_URL: string
