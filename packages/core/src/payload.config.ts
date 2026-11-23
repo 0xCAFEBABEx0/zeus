@@ -2,6 +2,7 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 
 import sharp from 'sharp' // sharp-import
+import { timingSafeEqual } from 'crypto'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'url'
@@ -106,9 +107,16 @@ export default buildConfig({
 
         // If there is no logged in user, then check
         // for the Vercel Cron secret to be present as an
-        // Authorization header:
+        // Authorization header. Fail closed when CRON_SECRET is unset.
+        const cronSecret = process.env.CRON_SECRET
+        if (!cronSecret) return false
+
         const authHeader = req.headers.get('authorization')
-        return authHeader === `Bearer ${process.env.CRON_SECRET}`
+        if (!authHeader) return false
+
+        const expected = Buffer.from(`Bearer ${cronSecret}`)
+        const received = Buffer.from(authHeader)
+        return received.length === expected.length && timingSafeEqual(received, expected)
       },
     },
     tasks: [],
