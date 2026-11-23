@@ -41,7 +41,7 @@ Both apps report to the same Sentry project; events carry the tag `app: cms` or 
 | `VERCEL` | Vercel | Makes the website throw instead of falling back to `http://localhost:3001` when `NEXT_PUBLIC_CMS_URL` is missing |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | Vercel, when "Protection Bypass for Automation" is enabled on the web project | Lets `/api/revalidate` re-render pages of a protected Preview deployment |
 | `VERCEL_URL` | Vercel | Used only by the legacy `getServerUrl()` helper |
-| `NODE_ENV` | Scripts / Vercel | `production` for builds (also forced in each `vercel.json`); `development` turns off database SSL |
+| `NODE_ENV` | Scripts / Vercel | `production` for builds (also forced in each `vercel.json`); `development` turns off database SSL; any other value requires a database certificate that chains to a trusted CA |
 | `CI` | GitHub Actions | Skips the `POSTGRES_URL` check and makes Sentry print upload logs |
 | `NODE_VERSION` | `vercel.json` build env | Node.js major used by Vercel builds (`26`). The website's build also rewrites its function runtime to `nodejs26.x`, because `@astrojs/vercel` only knows Node.js 24 and older |
 | `VERCEL_FETCH_DISABLE_H2` | Vercel project (optional, not set) | `1` makes the built-in `fetch` in Vercel Functions use HTTP/1.1; Node.js 26 negotiates HTTP/2 by default, which leaves `response.statusText` empty |

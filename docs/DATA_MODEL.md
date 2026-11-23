@@ -164,7 +164,7 @@ Index entries for published posts: `title`, `priority`, `doc` (→ `posts`), plu
 
 ## Database
 
-- Adapter: `@payloadcms/db-postgres`, connection string `POSTGRES_URL`. SSL is on unless `NODE_ENV=development`.
+- Adapter: `@payloadcms/db-postgres`, connection string `POSTGRES_URL`. SSL with certificate verification is on unless `NODE_ENV=development`.
 - Naming: one table per collection, child tables for arrays and blocks (`pages_blocks_content_columns`), `*_rels` tables for relationships, `_pages_v` / `_posts_v` tables for versions, and Postgres enums for select fields.
 - `prisma/schema.prisma` is a leftover and is not used; Payload owns the schema.
 
