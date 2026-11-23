@@ -1,6 +1,9 @@
-import type { Field, GroupField } from 'payload'
+import type { Field, GroupField, TextFieldSingleValidation } from 'payload'
+import { text } from 'payload/shared'
 
 import deepMerge from '@/utilities/deepMerge'
+
+const ALLOWED_URL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:'])
 
 export type LinkAppearances = 'default' | 'outline'
 
@@ -86,6 +89,17 @@ export const link: LinkType = ({ appearances, disableLabel = false, overrides = 
       },
       label: 'Custom URL',
       required: true,
+      validate: ((value, options) => {
+        const result = text(value, options)
+        if (result !== true || !value) return result
+        try {
+          const { protocol } = new URL(value.trim(), 'https://relative.invalid')
+          if (ALLOWED_URL_PROTOCOLS.has(protocol)) return true
+        } catch {
+          // Malformed URL
+        }
+        return 'Use a valid http, https, mailto or tel URL, or a relative path.'
+      }) as TextFieldSingleValidation,
     },
   ]
 
