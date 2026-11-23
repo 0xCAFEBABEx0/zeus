@@ -163,11 +163,13 @@ const widthStyle = (width: number | null) =>
         </form>
 
         <div class="form-confirmation hidden">
-          {form.confirmationType === 'message' && form.confirmationMessage && (
+          {form.confirmationType === 'message' && form.confirmationMessage ? (
             <RichText
               data={form.confirmationMessage as unknown as SerializedEditorState}
               enableGutter={false}
             />
+          ) : (
+            <p>Thank you for your submission.</p>
           )}
         </div>
       </div>
