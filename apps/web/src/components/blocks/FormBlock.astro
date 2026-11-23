@@ -4,6 +4,7 @@ import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical
 
 import RichText from '@/components/RichText.astro'
 import { getCMSURL } from '@/lib/env'
+import { safeURL } from '@/lib/links'
 
 type Props = {
   enableIntro?: boolean | null
@@ -73,7 +74,7 @@ const widthStyle = (width: number | null) =>
           data-cms-url={getCMSURL()}
           data-confirmation-type={form.confirmationType ?? 'message'}
           data-redirect-url={
-            form.confirmationType === 'redirect' && form.redirect?.url ? form.redirect.url : ''
+            form.confirmationType === 'redirect' ? (safeURL(form.redirect?.url) ?? '') : ''
           }
           class="flex flex-wrap gap-x-3 gap-y-6"
         >
@@ -175,6 +176,8 @@ const widthStyle = (width: number | null) =>
 }
 
 <script>
+  import { safeURL } from '@/lib/links'
+
   // Submit form-builder forms as JSON to the CMS's form-submissions endpoint.
   document.querySelectorAll<HTMLFormElement>('form[data-cms-form]').forEach((formEl) => {
     formEl.addEventListener('submit', async (event) => {
@@ -207,8 +210,9 @@ const widthStyle = (width: number | null) =>
           return
         }
 
-        if (formEl.dataset.confirmationType === 'redirect' && formEl.dataset.redirectUrl) {
-          window.location.assign(formEl.dataset.redirectUrl)
+        const redirectURL = safeURL(formEl.dataset.redirectUrl)
+        if (formEl.dataset.confirmationType === 'redirect' && redirectURL) {
+          window.location.assign(redirectURL)
           return
         }
 
