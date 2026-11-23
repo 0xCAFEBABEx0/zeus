@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro'
 import { getCMSUser } from '@/lib/cms'
 import { disableDraft, enableDraft, PAYLOAD_TOKEN_COOKIE } from '@/lib/draft'
 import { env } from '@/lib/env'
+import { sameOriginPath } from '@/lib/redirect'
 
 /**
  * Entry point of draft preview and live preview. The CMS links here from its Preview button
@@ -27,7 +28,8 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
     return new Response('Insufficient search params', { status: 404 })
   }
 
-  if (!path.startsWith('/') || path.startsWith('//')) {
+  const target = sameOriginPath(path, url.origin)
+  if (!target) {
     return new Response('This endpoint can only be used for relative previews', { status: 500 })
   }
 
@@ -42,5 +44,5 @@ export const GET: APIRoute = async ({ url, cookies, redirect }) => {
     return new Response('Draft preview needs REVALIDATION_SECRET on the website', { status: 500 })
   }
 
-  return redirect(path, 307)
+  return redirect(target, 307)
 }
