@@ -1,6 +1,6 @@
 # Known issues and technical debt
 
-Findings from reviewing the code on `main` (2026-10-25), updated for the Astro website (2026-10-31). None of them blocks the site today; they are listed so they can be planned and fixed deliberately. Remove an entry when it is fixed.
+Findings from reviewing the code on `main` (2026-10-25), updated for the Astro website (2026-10-31). None of them blocks the site today; they are listed so they can be planned and fixed deliberately. Remove an entry when it is fixed. Accessibility barriers are tracked separately in [ACCESSIBILITY.md](./ACCESSIBILITY.md#known-limitations).
 
 ## Behaviour gaps
 
