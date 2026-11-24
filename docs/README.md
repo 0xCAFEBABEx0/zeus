@@ -20,6 +20,7 @@ Zeus is the content platform behind **ausor.ai**. It is a Bun workspace with two
 | [DEVELOPMENT.md](./DEVELOPMENT.md) | Local setup, scripts, Payload CLI, seeding, troubleshooting | You start working on the code |
 | [DEVELOPMENT_WORKFLOW.md](./DEVELOPMENT_WORKFLOW.md) | Branches, commits, pull requests, code review (CodeRabbit), CI, hotfixes | You commit, push or open a PR |
 | [OPERATIONS.md](./OPERATIONS.md) | Monitoring (Sentry, Vercel Analytics, Checkly), cron jobs, runbooks | Something breaks in production |
+| [ACCESSIBILITY.md](./ACCESSIBILITY.md) | Accessibility goals, known barriers, how to report one, contributor expectations (shown by GitHub as the repository's accessibility page) | You change the website's interface or receive an accessibility report |
 | [KNOWN_ISSUES.md](./KNOWN_ISSUES.md) | Leftovers from the template, inconsistencies and technical debt | You plan clean-up work |
 
 ## Keeping the docs current
