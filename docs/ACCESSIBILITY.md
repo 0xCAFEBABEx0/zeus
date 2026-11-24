@@ -20,7 +20,7 @@ The CMS admin panel at cms.ausor.ai is the standard Payload CMS admin interface,
 These are features of the code, not test results:
 
 - Pages declare their language (`lang="en"`). The site is in English only.
-- Pages are rendered on the server and work without JavaScript, except the form submission and the theme selector.
+- Pages are rendered on the server; JavaScript is used only for the theme, the theme selector and form submission.
 - The theme follows the operating system's light or dark setting, and a labelled selector in the footer lets visitors choose Auto, Light or Dark.
 - Form fields have visible labels connected to their inputs; required fields use the HTML `required` attribute, and submission errors are announced through `role="alert"`.
 - The search field has a label, the search icon link has a text alternative, and pagination is a labelled navigation landmark that marks the current page.
@@ -36,6 +36,7 @@ The website is built for current versions of the major desktop and mobile browse
 |---|---|---|
 | Images may have no text alternative | The `alt` field of media is optional in the CMS. An image uploaded without it is rendered with an empty `alt`, so screen readers skip it even when it carries information. | None for visitors. Editors should fill in alt text for every informative image. |
 | Moving video cannot be paused | Videos in media blocks and heroes play automatically, muted and in a loop, without controls to pause or stop them. | None on the site today. Reduce motion settings in the operating system are not taken into account. |
+| Pages stay blank without JavaScript | The page is hidden (`opacity: 0`) until a script sets the light or dark theme, so with JavaScript disabled or blocked nothing is visible. | Enable JavaScript for ausor.ai. |
 | No "skip to content" link | Keyboard users have to move through the header navigation on every page before reaching the main content. | Use the screen reader's landmark navigation to jump to the `main` region. |
 | The home link is announced as "Payload Logo" | The header logo is still the Payload template logo, and its text alternative does not name the site (see T2 in [KNOWN_ISSUES.md](./KNOWN_ISSUES.md#template-leftovers)). | The link always goes to the home page. |
 | Required checkboxes are not marked visually | Text, e-mail, number and select fields show an asterisk when required; checkboxes do not, although the browser still enforces them. | The browser's validation message appears when the form is submitted. |
@@ -45,7 +46,7 @@ We will add to this list as barriers are reported or found, and remove entries o
 
 ## Reporting an accessibility barrier
 
-If something on ausor.ai or cms.ausor.ai is hard or impossible to use, please [open an issue](https://github.com/0xCAFEBABEx0/zeus/issues/new?labels=accessibility) in this repository. You need a GitHub account to do so.
+If something on ausor.ai or cms.ausor.ai is hard or impossible to use, please [open an issue](https://github.com/0xCAFEBABEx0/zeus/issues/new) in this repository. You need a GitHub account to do so.
 
 It helps to tell us, as far as you can:
 
